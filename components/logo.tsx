@@ -4,23 +4,33 @@ import { Play } from "next/font/google";
 
 import { cn } from "@/lib/utils";
 
+interface LogoProps {
+    className?: string;
+    size?: "default" | "small";
+}
+
 const play = Play({
     subsets: ["latin"],
     weight: ["700"]
 });
 
-const Logo = () => {
+const Logo = ({
+    className,
+    size = "default"
+}: LogoProps) => {
     return (
-        <Link href="/" className="flex items-center gap-x-1">
+        <Link href="/" className="w-fit flex items-center gap-x-1">
             <Image
                 src="/logo.png"
                 alt="Logo"
-                height={35}
-                width={35}
+                height={size === "default" ? 35 : 25}
+                width={size === "default" ? 35 : 25}
             />
             <h1 className={cn(
                 play.className,
-                "font-bold text-xl text-slate-900"
+                "font-bold text-xl text-slate-900",
+                className,
+                size === "small" && "text-sm"
             )}>
                 PassLock
             </h1>

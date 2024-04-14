@@ -122,7 +122,7 @@ const SignupPage = () => {
                 </Form>
                 <p className="text-sm text-zinc-600">
                     If you don't have an account,
-                    <Link href="/login" className="text-primary ml-1 hover:underline">create a new one</Link>.
+                    <Link href="/signup" className="text-primary ml-1 hover:underline">create a new one</Link>.
                 </p>
             </div>
         </div>

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
+import { CookiesProvider } from 'next-client-cookies/server';
+
 import "./globals.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ["latin"] });
@@ -16,7 +18,11 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body className={plusJakartaSans.className}>{children}</body>
+            <body className={plusJakartaSans.className}>
+                <CookiesProvider>
+                    {children}
+                </CookiesProvider>
+            </body>
         </html>
     );
 }

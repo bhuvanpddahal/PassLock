@@ -1,6 +1,8 @@
 "use server";
 
-import Cryptr from "cryptr";
+import bcrypt from "bcryptjs";
+import { cookies } from "next/headers";
+
 import { db } from "@/lib/db";
 import {
     SigninPayload,
@@ -8,10 +10,7 @@ import {
     SignupPayload,
     SignupValidator
 } from "@/lib/validators/auth";
-import { cookies } from "next/headers";
 import { getUserByEmail } from "@/lib/queries/user";
-
-const cryptr = new Cryptr(process.env.CRYPTR_SECRET_KEY!);
 
 export const signUp = async (payload: SignupPayload) => {
     try {
@@ -19,22 +18,28 @@ export const signUp = async (payload: SignupPayload) => {
         if (!validatedFields.success) return { error: "Invalid fields" };
 
         const { name, email, masterPassword } = validatedFields.data;
-        const encryptedPassword = cryptr.encrypt(masterPassword);
-
+        
         const existingUser = await getUserByEmail(email);
         if (existingUser) return { error: "Email already taken" };
+
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(masterPassword, salt);
 
         const newUser = await db.user.create({
             data: {
                 name,
                 email,
-                masterPassword: encryptedPassword
+                masterPassword: hashedPassword
             }
         });
 
-        cookies().set("user", JSON.stringify(newUser), {
+        cookies().set("user", JSON.stringify({
+            id: newUser.id,
+            name: newUser.name,
+            email: newUser.email
+        }), {
             path: "/",
-            httpOnly: true,
+            httpOnly: false,
             maxAge: 24 * 60 * 60 // 1 day
         });
 
@@ -51,15 +56,24 @@ export const signIn = async (payload: SigninPayload) => {
         if (!validatedFields.success) return { error: "Invalid fields" };
 
         const { email, masterPassword } = validatedFields.data;
-        const encryptedPassword = cryptr.encrypt(masterPassword);
 
         const existingUser = await getUserByEmail(email);
         if (!existingUser) return { error: "User not found" };
 
-        cookies().set("user", JSON.stringify(existingUser), {
+        const isCorrectPassword = await bcrypt.compare(
+            masterPassword,
+            existingUser.masterPassword
+        );
+        if(!isCorrectPassword) return { error: "Invalid credentials" };
+
+        cookies().set("user", JSON.stringify({
+            id: existingUser.id,
+            name: existingUser.name,
+            email: existingUser.email
+        }), {
             path: "/",
-            httpOnly: true,
-            maxAge: 24 * 60 * 60 // 1 day
+            httpOnly: false,
+            maxAge: 24 * 60 * 60, // 1 day
         });
 
         return { success: "Logged in successfully" };
