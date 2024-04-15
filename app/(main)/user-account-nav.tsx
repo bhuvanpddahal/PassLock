@@ -43,7 +43,7 @@ const UserAccountNav = () => {
                 <div className="p-3 rounded-sm flex items-center justify-between hover:bg-white/10">
                     <div className="flex items-center gap-2">
                         <Avatar>
-                            <AvatarFallback className="bg-gradient-to-r from-orange-500 to-red-500 text-lg text-zinc-100">{user.name[0]}</AvatarFallback>
+                            <AvatarFallback className="bg-gradient-to-r from-orange-600 to-red-600 text-lg text-zinc-100">{user.name[0]}</AvatarFallback>
                         </Avatar>
                         <div className="text-zinc-100 text-sm">
                             {user.name}
@@ -67,7 +67,7 @@ const UserAccountNav = () => {
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                    <Link href={`/favorites`} className='flex items-center gap-2'>
+                    <Link href="/favorites" className='flex items-center gap-2'>
                         <Star className='h-4 w-4 text-zinc-600' />
                         Favorites
                     </Link>
