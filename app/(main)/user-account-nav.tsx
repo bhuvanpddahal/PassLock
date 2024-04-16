@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useCookies } from "next-client-cookies";
 
+import UserAccountNavLoader from "./user-account-nav-loader";
 import {
     Avatar,
     AvatarFallback
@@ -33,7 +34,7 @@ const UserAccountNav = () => {
         setIsMounted(true);
     }, []);
 
-    if (!userString || !isMounted) return null;
+    if (!userString || !isMounted) return <UserAccountNavLoader />
 
     const user = JSON.parse(userString);
 

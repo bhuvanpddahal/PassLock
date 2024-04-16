@@ -101,8 +101,8 @@ const ItemContent = ({
                     <div>
                         <h3 className="text-[13px] text-primary -mb-0.5">Password</h3>
                         <p className={cn(
-                            "text-sm text-zinc-800 font-medium blur-sm",
-                            showPassword && "blur-0 select-none"
+                            "text-sm text-zinc-800 font-medium blur-sm select-none",
+                            showPassword && "blur-none select-auto"
                         )}>
                             {password}
                         </p>
@@ -136,7 +136,7 @@ const ItemContent = ({
                             "text-xs text-muted-foreground text-right",
                             passwordStrength(password).id === 0 && "text-red-500",
                             passwordStrength(password).id === 1 && "text-orange-500",
-                            passwordStrength(password).id === 2 && "text-yellow-800",
+                            passwordStrength(password).id === 2 && "text-yellow-700",
                             passwordStrength(password).id === 3 && "text-green-500"
                         )}>
                             {passwordStrength(password).value}

@@ -1,46 +1,73 @@
 import Image from "next/image";
 import {
+    Dispatch,
+    SetStateAction,
+    useEffect
+} from "react";
+import {
     FetchNextPageOptions,
     InfiniteData,
     InfiniteQueryObserverResult
 } from "@tanstack/react-query";
+import { Star } from "lucide-react";
 import { Account } from "@prisma/client";
-import { Dispatch, SetStateAction } from "react";
+import { useInView } from "react-intersection-observer";
 
+import ItemLoader from "./item-loader";
+import ItemsLoader from "./items-loader";
 import { cn } from "@/lib/utils";
 import { ItemsData } from "./types";
-import { Button } from "@/components/ui/button";
-import { Star } from "lucide-react";
 
 interface ItemsProps {
-    items: Account[];
+    items: Account[] | undefined;
+    status: "error" | "success" | "pending";
     activeIndex: number;
     setActiveIndex: Dispatch<SetStateAction<number>>;
+    totalItems: number;
     hasNextPage: boolean;
-    fetchNextPage: (options?: FetchNextPageOptions | undefined) => Promise<InfiniteQueryObserverResult<InfiniteData<ItemsData, unknown>, Error>>;
+    fetchNextPage: (options?: FetchNextPageOptions | undefined) => Promise<InfiniteQueryObserverResult<InfiniteData<ItemsData | {
+        items: never[];
+        hasNextPage: boolean;
+    }, unknown>, Error>>;
+    isFetchingNextPage: boolean;
 }
 
 const Items = ({
     items,
+    status,
     activeIndex,
     setActiveIndex,
+    totalItems,
     hasNextPage,
-    fetchNextPage
+    fetchNextPage,
+    isFetchingNextPage
 }: ItemsProps) => {
+    const { ref, inView } = useInView();
+
+    useEffect(() => {
+        if (inView && hasNextPage) {
+            if (fetchNextPage) fetchNextPage();
+        }
+    }, [inView, hasNextPage, fetchNextPage]);
+
+    if (status === "pending") return <ItemsLoader />
+    if (!items) return null;
+
     return (
         <div className="border-r border-zinc-300 h-full w-[280px] flex flex-col p-3 text-sm">
-            <h3>
-                {items.length > 0
-                    ? `${items.length} items`
+            <h3 className="pl-3">
+                {totalItems > 0
+                    ? totalItems === 1 ? "1 item" : `${totalItems} items`
                     : "No items"
                 }
             </h3>
             {items && items.length > 0 ? (
                 <>
-                    <ul className="flex-1 mt-3">
+                    <ul className="h-[calc(100vh-124px)] mt-3 overflow-y-auto">
                         {items.map((item, index) => (
                             <li
                                 key={item.id}
+                                ref={index === items.length - 1 ? ref : undefined}
                                 className={cn(
                                     "flex items-center gap-2 p-3 rounded-lg transition-colors cursor-pointer hover:bg-black/5",
                                     index === activeIndex && "bg-primary hover:bg-primary/90"
@@ -80,17 +107,25 @@ const Items = ({
                                 </div>
                             </li>
                         ))}
+                        {isFetchingNextPage && (
+                            Array.from({ length: 3 }, (_, index) => (
+                                <ItemLoader key={index} />
+                            ))
+                        )}
                     </ul>
-                    <Button
-                        variant="outline"
-                    >
-                        Show More Items
-                    </Button>
                 </>
             ) : (
-                <p>
-                    No items
-                </p>
+                <div className="flex-1 flex flex-col items-center justify-center gap-y-2">
+                    <Image
+                        src="/empty-box.png"
+                        alt="No items"
+                        height={80}
+                        width={80}
+                    />
+                    <p className="text-muted-foreground">
+                        Start by creating a new item.
+                    </p>
+                </div>
             )}
         </div>
     )

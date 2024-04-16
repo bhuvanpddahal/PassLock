@@ -68,6 +68,9 @@ export const getUserItems = async (payload: GetUserItemsPayload) => {
             where: {
                 userId
             },
+            orderBy: {
+                addedAt: "desc"
+            },
             take: limit,
             skip: (page - 1) * limit
         });
@@ -77,7 +80,14 @@ export const getUserItems = async (payload: GetUserItemsPayload) => {
             password: cryptr.decrypt(item.password)
         }));
 
-        return { items: polishedItems, hasNextPage: true };
+        const totalItems = await db.account.count({
+            where: {
+                userId
+            }
+        });
+        const hasNextPage = totalItems > (page * limit);
+
+        return { items: polishedItems, totalItems, hasNextPage };
     } catch (error) {
         console.error(error);
         return { error: "Something went wrong" };

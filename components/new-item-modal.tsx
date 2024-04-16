@@ -29,8 +29,10 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { createItem } from "@/actions/item";
 import { useNewItem } from "@/hooks/use-new-item-modal";
+import { useQueryClient } from "@tanstack/react-query";
 
 const NewItemModal = () => {
+    const queryClient = useQueryClient();
     const { isOpen, close } = useNewItem();
     const [isLoading, startTransition] = useTransition();
 
@@ -54,6 +56,9 @@ const NewItemModal = () => {
                 if (data?.success) {
                     form.reset();
                     toast.success(data.success);
+                    queryClient.invalidateQueries({
+                        queryKey: ["dashboard"]
+                    });
                     close();
                 }
             }).catch(() => {
@@ -64,7 +69,7 @@ const NewItemModal = () => {
 
     return (
         <Dialog open={isOpen} onOpenChange={close}>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-[525px] w-full">
                 <DialogHeader>
                     <DialogTitle>New Item</DialogTitle>
                     <DialogDescription>
@@ -154,7 +159,7 @@ const NewItemModal = () => {
                                 )}
                             />
 
-                            <DialogFooter>
+                            <DialogFooter className="gap-y-2">
                                 <Button
                                     type="button"
                                     variant="destructive"

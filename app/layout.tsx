@@ -23,9 +23,9 @@ export default function RootLayout({
         <html lang="en">
             <body className={plusJakartaSans.className}>
                 <Toaster />
-                <NewItemModal />
                 <CookiesProvider>
                     <Providers>
+                        <NewItemModal />
                         {children}
                     </Providers>
                 </CookiesProvider>
