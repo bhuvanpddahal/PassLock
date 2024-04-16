@@ -14,7 +14,7 @@ const NavLinks = () => {
     return (
         <ul className="flex-1 text-zinc-100 text-sm px-3 py-5">
             <li className={cn(
-                "rounded-sm cursor-pointer",
+                "rounded-sm cursor-pointer transition-colors",
                 pathname === "/dashboard" ? "bg-primary/30 hover:hover:bg-primary/25" : "hover:bg-white/10"
             )}>
                 <Link
@@ -26,7 +26,7 @@ const NavLinks = () => {
                 </Link>
             </li>
             <li className={cn(
-                "rounded-sm cursor-pointer",
+                "rounded-sm cursor-pointer transition-colors",
                 pathname === "/favorites" ? "bg-primary/30 hover:hover:bg-primary/25" : "hover:bg-white/10"
             )}>
                 <Link
@@ -38,7 +38,7 @@ const NavLinks = () => {
                 </Link>
             </li>
             <li className={cn(
-                "rounded-sm cursor-pointer",
+                "rounded-sm cursor-pointer transition-colors",
                 pathname === "/watchtower" ? "bg-primary/30 hover:hover:bg-primary/25" : "hover:bg-white/10"
             )}>
                 <Link

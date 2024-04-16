@@ -16,4 +16,10 @@ export const CreateItemValidator = z.object({
     })
 });
 
+export const GetUserItemsValidator = z.object({
+    page: z.number(),
+    limit: z.number()
+});
+
 export type CreateItemPayload = z.infer<typeof CreateItemValidator>;
+export type GetUserItemsPayload = z.infer<typeof GetUserItemsValidator>;

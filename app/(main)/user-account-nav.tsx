@@ -40,7 +40,7 @@ const UserAccountNav = () => {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger className="w-full outline-none border-none">
-                <div className="p-3 rounded-sm flex items-center justify-between hover:bg-white/10">
+                <div className="p-3 rounded-sm flex items-center justify-between transition-colors hover:bg-white/10">
                     <div className="flex items-center gap-2">
                         <Avatar>
                             <AvatarFallback className="bg-gradient-to-r from-orange-600 to-red-600 text-lg text-zinc-100">{user.name[0]}</AvatarFallback>

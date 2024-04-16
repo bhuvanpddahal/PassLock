@@ -25,7 +25,7 @@ const Sidebar = () => {
 
             <NavLinks />
 
-            <div className="border-t border-zinc-600 text-sm text-zinc-100 p-3 flex items-center justify-between hover:bg-white/10" onClick={() => {
+            <div className="border-t border-zinc-600 text-sm text-zinc-100 p-3 flex items-center justify-between transition-colors hover:bg-white/10" onClick={() => {
                 cookies.remove("user");
                 router.refresh();
             }}>

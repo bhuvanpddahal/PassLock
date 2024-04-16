@@ -46,7 +46,6 @@ const NewItemModal = () => {
     });
 
     const onSubmit = (payload: CreateItemPayload) => {
-        console.log("Payload: ", payload);
         startTransition(() => {
             createItem(payload).then((data) => {
                 if (data?.error) {

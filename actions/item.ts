@@ -6,7 +6,9 @@ import { cookies } from "next/headers";
 import { db } from "@/lib/db";
 import {
     CreateItemPayload,
-    CreateItemValidator
+    CreateItemValidator,
+    GetUserItemsPayload,
+    GetUserItemsValidator
 } from "@/lib/validators/item";
 
 const cryptr = new Cryptr(process.env.CRYPTR_SECRET_KEY!);
@@ -44,6 +46,38 @@ export const createItem = async (payload: CreateItemPayload) => {
         });
 
         return { success: "Item created successfully" };
+    } catch (error) {
+        console.error(error);
+        return { error: "Something went wrong" };
+    }
+};
+
+export const getUserItems = async (payload: GetUserItemsPayload) => {
+    try {
+        const validatedFields = GetUserItemsValidator.safeParse(payload);
+        if (!validatedFields.success) return { error: "Invalid fields" };
+
+        const { page, limit } = validatedFields.data;
+
+        const userCookie = cookies().get("user");
+        if (!userCookie) return { error: "Unauthorized" };
+
+        const userId = JSON.parse(userCookie.value).id || "";
+
+        const rawItems = await db.account.findMany({
+            where: {
+                userId
+            },
+            take: limit,
+            skip: (page - 1) * limit
+        });
+
+        const polishedItems = rawItems.map((item) => ({
+            ...item,
+            password: cryptr.decrypt(item.password)
+        }));
+
+        return { items: polishedItems, hasNextPage: true };
     } catch (error) {
         console.error(error);
         return { error: "Something went wrong" };
