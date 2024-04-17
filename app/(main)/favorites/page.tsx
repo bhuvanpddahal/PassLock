@@ -10,22 +10,22 @@ import ItemContent from "../item-content";
 import ItemContentLoader from "../item-content-loader";
 import { ItemsData } from "../types";
 import { ITEMS_PER_PAGE } from "../constant";
-import { getUserItems } from "@/actions/item";
 import { Button } from "@/components/ui/button";
+import { getUserFavoritedItems } from "@/actions/item";
 import { useNewItem } from "@/hooks/use-new-item-modal";
 
 interface FetchItemsProps {
     pageParam: number;
 }
 
-const DashboardPage = () => {
+const FavoritesPage = () => {
     const { open } = useNewItem();
     const [activeIndex, setActiveIndex] = useState(0);
 
     const fetchItems = async ({ pageParam }: FetchItemsProps) => {
         try {
             const payload = { page: pageParam, limit: ITEMS_PER_PAGE };
-            const data = await getUserItems(payload);
+            const data = await getUserFavoritedItems(payload);
             return data as ItemsData;
         } catch (error) {
             toast.error("Something went wrong");
@@ -40,7 +40,7 @@ const DashboardPage = () => {
         fetchNextPage,
         isFetchingNextPage
     } = useInfiniteQuery({
-        queryKey: ["dashboard"],
+        queryKey: ["favorites"],
         queryFn: fetchItems,
         initialPageParam: 1,
         getNextPageParam: (lastPage, pages) => {
@@ -134,4 +134,4 @@ const DashboardPage = () => {
     )
 };
 
-export default DashboardPage;
+export default FavoritesPage;

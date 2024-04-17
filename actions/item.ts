@@ -203,3 +203,47 @@ export const getUserItems = async (payload: GetUserItemsPayload) => {
         return { error: "Something went wrong" };
     }
 };
+
+export const getUserFavoritedItems = async (payload: GetUserItemsPayload) => {
+    try {
+        const validatedFields = GetUserItemsValidator.safeParse(payload);
+        if (!validatedFields.success) return { error: "Invalid fields" };
+
+        const { page, limit } = validatedFields.data;
+
+        const userCookie = cookies().get("user");
+        if (!userCookie) return { error: "Unauthorized" };
+
+        const userId = JSON.parse(userCookie.value).id || "";
+
+        const rawItems = await db.account.findMany({
+            where: {
+                userId,
+                favorited: true
+            },
+            orderBy: {
+                addedAt: "desc"
+            },
+            take: limit,
+            skip: (page - 1) * limit
+        });
+
+        const polishedItems = rawItems.map((item) => ({
+            ...item,
+            password: cryptr.decrypt(item.password)
+        }));
+
+        const totalItems = await db.account.count({
+            where: {
+                userId,
+                favorited: true
+            }
+        });
+        const hasNextPage = totalItems > (page * limit);
+
+        return { items: polishedItems, totalItems, hasNextPage };
+    } catch (error) {
+        console.error(error);
+        return { error: "Something went wrong" };
+    }
+};
