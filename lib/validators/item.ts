@@ -13,7 +13,26 @@ export const CreateItemValidator = z.object({
     }),
     password: z.string().min(1, {
         message: "Password is required"
-    })
+    }),
+    favorited: z.boolean()
+});
+
+export const EditItemValidator = z.object({
+    id: z.string(),
+    siteName: z.string().min(1, {
+        message: "Site name is required"
+    }),
+    siteLink: z.string().url({
+        message: "Invalid URL"
+    }),
+    siteIcon: z.string().optional(),
+    email: z.string().email({
+        message: "Email is invalid"
+    }),
+    password: z.string().min(1, {
+        message: "Password is required"
+    }),
+    favorited: z.boolean()
 });
 
 export const GetUserItemsValidator = z.object({
@@ -22,4 +41,5 @@ export const GetUserItemsValidator = z.object({
 });
 
 export type CreateItemPayload = z.infer<typeof CreateItemValidator>;
+export type EditItemPayload = z.infer<typeof EditItemValidator>;
 export type GetUserItemsPayload = z.infer<typeof GetUserItemsValidator>;

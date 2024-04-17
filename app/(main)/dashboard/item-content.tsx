@@ -4,17 +4,18 @@ import {
     Copy,
     Eye,
     EyeOff,
-    Pencil,
     Star,
     Trash2
 } from "lucide-react";
 import { useState } from "react";
 import { passwordStrength } from "check-password-strength";
 
+import EditItemButton from "./edit-item-button";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
 interface ItemContentProps {
+    id: string;
     siteName: string;
     siteLink: string;
     siteIcon: string | null;
@@ -24,6 +25,7 @@ interface ItemContentProps {
 }
 
 const ItemContent = ({
+    id,
     siteName,
     siteLink,
     siteIcon,
@@ -50,14 +52,16 @@ const ItemContent = ({
     return (
         <div className="flex-1 p-3 pl-4">
             <div className="flex items-center justify-end gap-2">
-                <Button
-                    variant="ghost"
-                    className="gap-1"
-                    size="sm"
-                >
-                    <Pencil className="h-4 w-4 text-zinc-600" />
-                    Edit
-                </Button>
+                <EditItemButton
+                    key={id}
+                    id={id}
+                    siteName={siteName}
+                    siteLink={siteLink}
+                    siteIcon={siteIcon}
+                    email={email}
+                    password={password}
+                    favorited={favorited}
+                />
                 <Button
                     variant="destructive"
                     className="gap-1"

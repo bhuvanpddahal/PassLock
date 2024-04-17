@@ -69,6 +69,7 @@ const DashboardPage = () => {
             {items
                 ? items[activeIndex] ? (
                     <ItemContent
+                        id={items[activeIndex].id}
                         siteName={items[activeIndex].siteName}
                         siteLink={items[activeIndex].siteLink}
                         siteIcon={items[activeIndex].siteIcon}

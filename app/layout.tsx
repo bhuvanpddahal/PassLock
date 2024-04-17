@@ -7,7 +7,9 @@ import Providers from "@/components/providers";
 import NewItemModal from "@/components/new-item-modal";
 import { Toaster } from "@/components/ui/sonner";
 
-const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ["latin"] });
+const plusJakartaSans = Plus_Jakarta_Sans({
+    subsets: ["latin"]
+});
 
 export const metadata: Metadata = {
     title: "PassLock",

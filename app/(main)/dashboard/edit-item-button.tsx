@@ -1,8 +1,9 @@
 "use client";
 
 import { toast } from "sonner";
-import { useTransition } from "react";
+import { Pencil } from "lucide-react";
 import { useForm } from "react-hook-form";
+import { useRef, useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -13,55 +14,74 @@ import {
     FormItem,
     FormLabel,
     FormMessage
-} from "./ui/form";
+} from "@/components/ui/form";
+import {
+    EditItemPayload,
+    EditItemValidator
+} from "@/lib/validators/item";
 import {
     Dialog,
     DialogContent,
     DialogDescription,
     DialogFooter,
     DialogHeader,
-    DialogTitle
-} from "./ui/dialog";
-import {
-    CreateItemPayload,
-    CreateItemValidator
-} from "@/lib/validators/item";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
-import { Checkbox } from "./ui/checkbox";
-import { createItem } from "@/actions/item";
-import { useNewItem } from "@/hooks/use-new-item-modal";
+    DialogTitle,
+    DialogTrigger
+} from "@/components/ui/dialog";
+import { editItem } from "@/actions/item";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { DialogClose } from "@radix-ui/react-dialog";
 
-const NewItemModal = () => {
+interface EditItemButtonProps {
+    id: string;
+    siteName: string;
+    siteLink: string;
+    siteIcon: string | null;
+    email: string;
+    password: string;
+    favorited: boolean;
+}
+
+const EditItemButton = ({
+    id,
+    siteName,
+    siteLink,
+    siteIcon,
+    email,
+    password,
+    favorited
+}: EditItemButtonProps) => {
     const queryClient = useQueryClient();
-    const { isOpen, close } = useNewItem();
+    const closeRef = useRef<HTMLButtonElement>(null);
     const [isLoading, startTransition] = useTransition();
 
-    const form = useForm<CreateItemPayload>({
-        resolver: zodResolver(CreateItemValidator),
+    const form = useForm<EditItemPayload>({
+        resolver: zodResolver(EditItemValidator),
         defaultValues: {
-            siteName: "",
-            siteLink: "",
-            siteIcon: undefined,
-            email: "",
-            password: "",
-            favorited: false
+            id,
+            siteName,
+            siteLink,
+            siteIcon: siteIcon ? siteIcon : undefined,
+            email,
+            password,
+            favorited
         }
     });
 
-    const onSubmit = (payload: CreateItemPayload) => {
+    const onSubmit = (payload: EditItemPayload) => {
         startTransition(() => {
-            createItem(payload).then((data) => {
+            editItem(payload).then((data) => {
                 if (data?.error) {
                     toast.error(data.error);
                 }
                 if (data?.success) {
-                    form.reset();
                     toast.success(data.success);
                     queryClient.invalidateQueries({
                         queryKey: ["dashboard"]
                     });
-                    close();
+                    if (closeRef.current) closeRef.current.click();
                 }
             }).catch(() => {
                 toast.error("Something went wrong");
@@ -70,12 +90,22 @@ const NewItemModal = () => {
     };
 
     return (
-        <Dialog open={isOpen} onOpenChange={close}>
+        <Dialog>
+            <DialogTrigger>
+                <Button
+                    variant="ghost"
+                    className="gap-1"
+                    size="sm"
+                >
+                    <Pencil className="h-4 w-4 text-zinc-600" />
+                    Edit
+                </Button>
+            </DialogTrigger>
             <DialogContent className="sm:max-w-[525px] w-full">
                 <DialogHeader>
-                    <DialogTitle>New Item</DialogTitle>
+                    <DialogTitle>Edit Item</DialogTitle>
                     <DialogDescription>
-                        Create a new item to store in PassLock. Don't worry, you can edit the values at anytime.
+                        Apply the changes and click save when you're done.
                     </DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
@@ -181,19 +211,21 @@ const NewItemModal = () => {
                             />
 
                             <DialogFooter className="gap-y-2">
-                                <Button
-                                    type="button"
-                                    variant="destructive"
-                                    onClick={close}
-                                >
-                                    Cancel
-                                </Button>
+                                <DialogClose asChild>
+                                    <Button
+                                        type="button"
+                                        variant="destructive"
+                                        ref={closeRef}
+                                    >
+                                        Cancel
+                                    </Button>
+                                </DialogClose>
                                 <Button
                                     type="submit"
                                     disabled={isLoading}
                                     isLoading={isLoading}
                                 >
-                                    {isLoading ? "Creating" : "Create"}
+                                    {isLoading ? "Saving" : "Save"}
                                 </Button>
                             </DialogFooter>
                         </div>
@@ -204,4 +236,4 @@ const NewItemModal = () => {
     )
 };
 
-export default NewItemModal;
+export default EditItemButton;

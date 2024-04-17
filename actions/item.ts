@@ -7,6 +7,8 @@ import { db } from "@/lib/db";
 import {
     CreateItemPayload,
     CreateItemValidator,
+    EditItemPayload,
+    EditItemValidator,
     GetUserItemsPayload,
     GetUserItemsValidator
 } from "@/lib/validators/item";
@@ -18,7 +20,14 @@ export const createItem = async (payload: CreateItemPayload) => {
         const validatedFields = CreateItemValidator.safeParse(payload);
         if (!validatedFields.success) return { error: "Invalid fields" };
 
-        const { siteName, siteLink, siteIcon, email, password } = validatedFields.data;
+        const {
+            siteName,
+            siteLink,
+            siteIcon,
+            email,
+            password,
+            favorited
+        } = validatedFields.data;
 
         const userCookie = cookies().get("user");
         if (!userCookie) return { error: "Unauthorized" };
@@ -41,11 +50,69 @@ export const createItem = async (payload: CreateItemPayload) => {
                 siteIcon,
                 email,
                 password: encryptedPassword,
+                favorited,
                 userId
             }
         });
 
         return { success: "Item created successfully" };
+    } catch (error) {
+        console.error(error);
+        return { error: "Something went wrong" };
+    }
+};
+export const editItem = async (payload: EditItemPayload) => {
+    try {
+        const validatedFields = EditItemValidator.safeParse(payload);
+        if (!validatedFields.success) return { error: "Invalid fields" };
+
+        const {
+            id,
+            siteName,
+            siteLink,
+            siteIcon,
+            email,
+            password,
+            favorited
+        } = validatedFields.data;
+
+        const userCookie = cookies().get("user");
+        if (!userCookie) return { error: "Unauthorized" };
+
+        const userId = JSON.parse(userCookie.value).id || "";
+
+        const dbUser = await db.user.findUnique({
+            where: {
+                id: userId
+            }
+        });
+        if (!dbUser) return { error: "User not found" };
+
+        const dbItem = await db.account.findFirst({
+            where: {
+                id,
+                userId
+            }
+        });
+        if (!dbItem) return { error: "Item not found" };
+
+        const encryptedPassword = cryptr.encrypt(password);
+
+        await db.account.update({
+            where: {
+                id
+            },
+            data: {
+                siteName,
+                siteLink,
+                siteIcon,
+                email,
+                password: encryptedPassword,
+                favorited
+            }
+        });
+
+        return { success: "Item updated successfully" };
     } catch (error) {
         console.error(error);
         return { error: "Something went wrong" };
