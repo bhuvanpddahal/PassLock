@@ -4,13 +4,13 @@ import {
     Copy,
     Eye,
     EyeOff,
-    Star,
-    Trash2
+    Star
 } from "lucide-react";
 import { useState } from "react";
 import { passwordStrength } from "check-password-strength";
 
 import EditItemButton from "./edit-item-button";
+import DeleteItemButton from "./delete-item-button";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
@@ -53,7 +53,6 @@ const ItemContent = ({
         <div className="flex-1 p-3 pl-4">
             <div className="flex items-center justify-end gap-2">
                 <EditItemButton
-                    key={id}
                     id={id}
                     siteName={siteName}
                     siteLink={siteLink}
@@ -62,13 +61,13 @@ const ItemContent = ({
                     password={password}
                     favorited={favorited}
                 />
-                <Button
-                    variant="destructive"
-                    className="gap-1"
-                    size="sm"
-                >
-                    <Trash2 className="h-5 w-5 text-zinc-100" />
-                </Button>
+                <DeleteItemButton
+                    id={id}
+                    siteName={siteName}
+                    siteIcon={siteIcon}
+                    email={email}
+                    favorited={favorited}
+                />
             </div>
             <div className="flex items-center gap-3 mt-4 mb-8">
                 <div className="relative">

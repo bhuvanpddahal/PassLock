@@ -7,6 +7,8 @@ import { db } from "@/lib/db";
 import {
     CreateItemPayload,
     CreateItemValidator,
+    DeleteItemPayload,
+    DeleteItemValidator,
     EditItemPayload,
     EditItemValidator,
     GetUserItemsPayload,
@@ -61,6 +63,7 @@ export const createItem = async (payload: CreateItemPayload) => {
         return { error: "Something went wrong" };
     }
 };
+
 export const editItem = async (payload: EditItemPayload) => {
     try {
         const validatedFields = EditItemValidator.safeParse(payload);
@@ -113,6 +116,46 @@ export const editItem = async (payload: EditItemPayload) => {
         });
 
         return { success: "Item updated successfully" };
+    } catch (error) {
+        console.error(error);
+        return { error: "Something went wrong" };
+    }
+};
+
+export const deleteItem = async (payload: DeleteItemPayload) => {
+    try {
+        const validatedFields = DeleteItemValidator.safeParse(payload);
+        if (!validatedFields.success) return { error: "Invalid fields" };
+
+        const { id } = validatedFields.data;
+
+        const userCookie = cookies().get("user");
+        if (!userCookie) return { error: "Unauthorized" };
+
+        const userId = JSON.parse(userCookie.value).id || "";
+
+        const dbUser = await db.user.findUnique({
+            where: {
+                id: userId
+            }
+        });
+        if (!dbUser) return { error: "User not found" };
+
+        const dbItem = await db.account.findFirst({
+            where: {
+                id,
+                userId
+            }
+        });
+        if (!dbItem) return { error: "Item not found" };
+
+        await db.account.delete({
+            where: {
+                id
+            }
+        });
+
+        return { success: "Item deleted successfully" };
     } catch (error) {
         console.error(error);
         return { error: "Something went wrong" };

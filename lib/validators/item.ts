@@ -35,6 +35,10 @@ export const EditItemValidator = z.object({
     favorited: z.boolean()
 });
 
+export const DeleteItemValidator = z.object({
+    id: z.string()
+});
+
 export const GetUserItemsValidator = z.object({
     page: z.number(),
     limit: z.number()
@@ -42,4 +46,5 @@ export const GetUserItemsValidator = z.object({
 
 export type CreateItemPayload = z.infer<typeof CreateItemValidator>;
 export type EditItemPayload = z.infer<typeof EditItemValidator>;
+export type DeleteItemPayload = z.infer<typeof DeleteItemValidator>;
 export type GetUserItemsPayload = z.infer<typeof GetUserItemsValidator>;

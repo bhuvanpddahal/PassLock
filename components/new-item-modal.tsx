@@ -183,7 +183,7 @@ const NewItemModal = () => {
                             <DialogFooter className="gap-y-2">
                                 <Button
                                     type="button"
-                                    variant="destructive"
+                                    variant="outline"
                                     onClick={close}
                                 >
                                     Cancel

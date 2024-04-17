@@ -1,9 +1,13 @@
 "use client";
 
+import {
+    useEffect,
+    useRef,
+    useTransition
+} from "react";
 import { toast } from "sonner";
 import { Pencil } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { useRef, useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -88,6 +92,16 @@ const EditItemButton = ({
             });
         });
     };
+
+    useEffect(() => {
+        form.setValue("id", id);
+        form.setValue("siteName", siteName);
+        form.setValue("siteLink", siteLink);
+        form.setValue("siteIcon", siteIcon || undefined);
+        form.setValue("email", email);
+        form.setValue("password", password);
+        form.setValue("favorited", favorited);
+    }, [id]);
 
     return (
         <Dialog>
@@ -214,7 +228,7 @@ const EditItemButton = ({
                                 <DialogClose asChild>
                                     <Button
                                         type="button"
-                                        variant="destructive"
+                                        variant="outline"
                                         ref={closeRef}
                                     >
                                         Cancel
