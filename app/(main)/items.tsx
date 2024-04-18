@@ -54,8 +54,8 @@ const Items = ({
     if (!items) return null;
 
     return (
-        <div className="border-r border-zinc-300 h-full w-[280px] flex flex-col p-3 text-sm">
-            <h3 className="pl-3">
+        <div className="border-r border-zinc-300 h-full w-[280px] flex flex-col text-sm">
+            <h3 className="p-3 pl-6">
                 {totalItems > 0
                     ? totalItems === 1 ? "1 item" : `${totalItems} items`
                     : "No items"
@@ -63,7 +63,7 @@ const Items = ({
             </h3>
             {items && items.length > 0 ? (
                 <>
-                    <ul className="h-[calc(100vh-124px)] mt-3 overflow-y-auto">
+                    <ul className="h-[calc(100vh-124px)] overflow-y-auto px-3">
                         {items.map((item, index) => (
                             <li
                                 key={item.id}

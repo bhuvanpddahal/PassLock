@@ -5,3 +5,9 @@ export interface ItemsData {
     totalItems: number;
     hasNextPage: boolean;
 }
+
+export interface NotificationsData {
+    items: Account[];
+    totalItems: number;
+    hasNextPage: boolean;
+}

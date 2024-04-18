@@ -44,7 +44,13 @@ export const GetUserItemsValidator = z.object({
     limit: z.number()
 });
 
+export const GetUserNotificationValidator = z.object({
+    page: z.number(),
+    limit: z.number()
+});
+
 export type CreateItemPayload = z.infer<typeof CreateItemValidator>;
 export type EditItemPayload = z.infer<typeof EditItemValidator>;
 export type DeleteItemPayload = z.infer<typeof DeleteItemValidator>;
 export type GetUserItemsPayload = z.infer<typeof GetUserItemsValidator>;
+export type GetUserNotificationPayload = z.infer<typeof GetUserNotificationValidator>;

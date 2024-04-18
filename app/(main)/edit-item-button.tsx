@@ -216,7 +216,7 @@ const EditItemButton = ({
                                             <Checkbox
                                                 checked={field.value}
                                                 onCheckedChange={field.onChange}
-                                                className="border-yellow-400 focus:ring-yellow-400 data-[state=checked]:bg-yellow-400 data-[state=checked]:text-zinc-100"
+                                                className="border-yellow-400 focus:ring-yellow-400 data-[state=checked]:bg-yellow-400 data-[state=checked]:text-[#aaa]"
                                             />
                                         </FormControl>
                                         <FormMessage />

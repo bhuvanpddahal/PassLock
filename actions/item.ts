@@ -12,8 +12,15 @@ import {
     EditItemPayload,
     EditItemValidator,
     GetUserItemsPayload,
-    GetUserItemsValidator
+    GetUserItemsValidator,
+    GetUserNotificationPayload,
+    GetUserNotificationValidator
 } from "@/lib/validators/item";
+import {
+    getItemsWithReusedPassword,
+    getItemsWithVulnerablePassword
+} from "@/lib/queries/item";
+import { getUserById } from "@/lib/queries/user";
 
 const cryptr = new Cryptr(process.env.CRYPTR_SECRET_KEY!);
 
@@ -36,11 +43,7 @@ export const createItem = async (payload: CreateItemPayload) => {
 
         const userId = JSON.parse(userCookie.value).id || "";
 
-        const dbUser = await db.user.findUnique({
-            where: {
-                id: userId
-            }
-        });
+        const dbUser = await getUserById(userId);
         if (!dbUser) return { error: "User not found" };
 
         const encryptedPassword = cryptr.encrypt(password);
@@ -84,11 +87,7 @@ export const editItem = async (payload: EditItemPayload) => {
 
         const userId = JSON.parse(userCookie.value).id || "";
 
-        const dbUser = await db.user.findUnique({
-            where: {
-                id: userId
-            }
-        });
+        const dbUser = await getUserById(userId);
         if (!dbUser) return { error: "User not found" };
 
         const dbItem = await db.account.findFirst({
@@ -134,11 +133,7 @@ export const deleteItem = async (payload: DeleteItemPayload) => {
 
         const userId = JSON.parse(userCookie.value).id || "";
 
-        const dbUser = await db.user.findUnique({
-            where: {
-                id: userId
-            }
-        });
+        const dbUser = await getUserById(userId);
         if (!dbUser) return { error: "User not found" };
 
         const dbItem = await db.account.findFirst({
@@ -173,6 +168,9 @@ export const getUserItems = async (payload: GetUserItemsPayload) => {
         if (!userCookie) return { error: "Unauthorized" };
 
         const userId = JSON.parse(userCookie.value).id || "";
+
+        const dbUser = await getUserById(userId);
+        if (!dbUser) return { error: "User not found" };
 
         const rawItems = await db.account.findMany({
             where: {
@@ -216,6 +214,9 @@ export const getUserFavoritedItems = async (payload: GetUserItemsPayload) => {
 
         const userId = JSON.parse(userCookie.value).id || "";
 
+        const dbUser = await getUserById(userId);
+        if (!dbUser) return { error: "User not found" };
+
         const rawItems = await db.account.findMany({
             where: {
                 userId,
@@ -242,6 +243,62 @@ export const getUserFavoritedItems = async (payload: GetUserItemsPayload) => {
         const hasNextPage = totalItems > (page * limit);
 
         return { items: polishedItems, totalItems, hasNextPage };
+    } catch (error) {
+        console.error(error);
+        return { error: "Something went wrong" };
+    }
+};
+
+export const getUserItemsWithVulnerablePassword = async (payload: GetUserNotificationPayload) => {
+    try {
+        const validatedFields = GetUserNotificationValidator.safeParse(payload);
+        if (!validatedFields.success) return { error: "Invalid fields" };
+
+        const { page, limit } = validatedFields.data;
+
+        const userCookie = cookies().get("user");
+        if (!userCookie) return { error: "Unauthorized" };
+
+        const userId = JSON.parse(userCookie.value).id || "";
+
+        const dbUser = await getUserById(userId);
+        if (!dbUser) return { error: "User not found" };
+
+        const data = await getItemsWithVulnerablePassword(
+            userId,
+            page,
+            limit
+        );
+
+        return data;
+    } catch (error) {
+        console.error(error);
+        return { error: "Something went wrong" };
+    }
+};
+
+export const getUserItemsWithReusedPassword = async (payload: GetUserNotificationPayload) => {
+    try {
+        const validatedFields = GetUserNotificationValidator.safeParse(payload);
+        if (!validatedFields.success) return { error: "Invalid fields" };
+
+        const { page, limit } = validatedFields.data;
+
+        const userCookie = cookies().get("user");
+        if (!userCookie) return { error: "Unauthorized" };
+
+        const userId = JSON.parse(userCookie.value).id || "";
+
+        const dbUser = await getUserById(userId);
+        if (!dbUser) return { error: "User not found" };
+
+        const data = await getItemsWithReusedPassword(
+            userId,
+            page,
+            limit
+        );
+
+        return data;
     } catch (error) {
         console.error(error);
         return { error: "Something went wrong" };
