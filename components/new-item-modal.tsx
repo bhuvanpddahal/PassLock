@@ -42,7 +42,6 @@ const NewItemModal = () => {
         defaultValues: {
             siteName: "",
             siteLink: "",
-            siteIcon: undefined,
             email: "",
             password: "",
             favorited: false

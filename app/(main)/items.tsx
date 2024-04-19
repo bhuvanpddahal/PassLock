@@ -77,7 +77,7 @@ const Items = ({
                                 >
                                     <div className="relative">
                                         <Image
-                                            src={item.siteIcon ? item.siteIcon : "/padlock.png"}
+                                            src="/padlock.png"
                                             alt="Account"
                                             height={40}
                                             width={40}

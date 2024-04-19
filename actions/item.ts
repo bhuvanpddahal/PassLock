@@ -33,7 +33,6 @@ export const createItem = async (payload: CreateItemPayload) => {
         const {
             siteName,
             siteLink,
-            siteIcon,
             email,
             password,
             favorited
@@ -53,7 +52,6 @@ export const createItem = async (payload: CreateItemPayload) => {
             data: {
                 siteName,
                 siteLink,
-                siteIcon,
                 email,
                 password: encryptedPassword,
                 favorited,
@@ -77,7 +75,6 @@ export const editItem = async (payload: EditItemPayload) => {
             id,
             siteName,
             siteLink,
-            siteIcon,
             email,
             password,
             favorited
@@ -108,7 +105,6 @@ export const editItem = async (payload: EditItemPayload) => {
             data: {
                 siteName,
                 siteLink,
-                siteIcon,
                 email,
                 password: encryptedPassword,
                 favorited

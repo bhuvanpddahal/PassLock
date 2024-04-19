@@ -25,7 +25,6 @@ model Account {
     id        String   @id @default(auto()) @map("_id") @db.ObjectId
     siteName  String
     siteLink  String
-    siteIcon  String?
     email     String
     password  String
     favorited Boolean  @default(false)

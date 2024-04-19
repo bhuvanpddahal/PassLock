@@ -7,7 +7,6 @@ export const CreateItemValidator = z.object({
     siteLink: z.string().url({
         message: "Invalid URL"
     }),
-    siteIcon: z.string().optional(),
     email: z.string().email({
         message: "Email is invalid"
     }),
@@ -25,7 +24,6 @@ export const EditItemValidator = z.object({
     siteLink: z.string().url({
         message: "Invalid URL"
     }),
-    siteIcon: z.string().optional(),
     email: z.string().email({
         message: "Email is invalid"
     }),
