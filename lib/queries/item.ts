@@ -9,13 +9,15 @@ interface PreviousPassword {
     siteIcon: string | null;
     email: string;
     password: string;
+    favorited: boolean;
 }
 
-interface Item extends Account {
+export interface Item extends Account {
     originalPasswordOf: {
         siteName: string;
         siteIcon: string | null;
         email: string;
+        favorited: boolean;
     };
 }
 
@@ -83,10 +85,12 @@ export const getItemsWithReusedPassword = async (
             if (originalPasswordIndex !== -1) { // If password is reused
                 itemsWithReusedPasswords.push({
                     ...initialItems[i],
+                    password: decryptedPassword,
                     originalPasswordOf: {
                         siteName: previousPasswords[originalPasswordIndex].siteName,
                         siteIcon: previousPasswords[originalPasswordIndex].siteIcon,
-                        email: previousPasswords[originalPasswordIndex].email
+                        email: previousPasswords[originalPasswordIndex].email,
+                        favorited: previousPasswords[originalPasswordIndex].favorited
                     }
                 });
             } else { // If password is original
@@ -94,7 +98,8 @@ export const getItemsWithReusedPassword = async (
                     siteName: initialItems[i].siteName,
                     siteIcon: initialItems[i].siteIcon,
                     email: initialItems[i].email,
-                    password: decryptedPassword
+                    password: decryptedPassword,
+                    favorited: initialItems[i].favorited
                 });
             }
         }
@@ -103,6 +108,40 @@ export const getItemsWithReusedPassword = async (
         const items = reversedItems.slice((page - 1) * limit, page * limit);
         const totalItems = reversedItems.length;
         const hasNextPage = reversedItems.length > page * limit;
+
+        return { items, totalItems, hasNextPage };
+    } catch (error) {
+        return null;
+    }
+};
+
+export const getItemsWithUnsecuredWebsite = async (
+    userId: string,
+    page: number,
+    limit: number
+) => {
+    try {
+        const initialItems = await db.account.findMany({
+            where: {
+                userId
+            },
+            orderBy: {
+                addedAt: "desc"
+            }
+        });
+
+        const filteredItems = initialItems.filter(
+            (item) => !item.siteLink.includes("https://")
+        );
+
+        const polishedItems = filteredItems.map((item) => ({
+            ...item,
+            password: cryptr.decrypt(item.password)
+        }));
+
+        const items = polishedItems.slice((page - 1) * limit, page * limit);
+        const totalItems = polishedItems.length;
+        const hasNextPage = polishedItems.length > page * limit;
 
         return { items, totalItems, hasNextPage };
     } catch (error) {

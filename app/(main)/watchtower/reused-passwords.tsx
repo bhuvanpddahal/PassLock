@@ -2,12 +2,15 @@ import Image from "next/image";
 import { toast } from "sonner";
 import { RefreshCw } from "lucide-react";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { Dispatch, SetStateAction, useEffect } from "react";
 
 import ItemLoader from "../item-loader";
 import NotificationsError from "./notifications-error";
 import NotificationsLoader from "./notifications-loader";
-import { NotificationsData } from "../types";
+import { cn } from "@/lib/utils";
+import type { Active, Data } from "./page";
 import { Badge } from "@/components/ui/badge";
+import { ReusedPasswordsData } from "../types";
 import { Button } from "@/components/ui/button";
 import { ITEMS_PER_NOTIFICATION } from "../constant";
 import { getUserItemsWithReusedPassword } from "@/actions/item";
@@ -16,14 +19,24 @@ interface fetchItemsWithReusedPasswordParams {
     pageParam: number;
 }
 
-const ReusedPasswords = () => {
+interface ReusedPasswordsProps {
+    active: Active;
+    setActive: Dispatch<SetStateAction<Active>>;
+    setData: Dispatch<SetStateAction<Data>>;
+}
+
+const ReusedPasswords = ({
+    active,
+    setActive,
+    setData
+}: ReusedPasswordsProps) => {
     const fetchItemsWithReusedPassword = async ({
         pageParam
     }: fetchItemsWithReusedPasswordParams) => {
         try {
             const payload = { page: pageParam, limit: ITEMS_PER_NOTIFICATION };
             const data = await getUserItemsWithReusedPassword(payload);
-            return data as NotificationsData;
+            return data as ReusedPasswordsData;
         } catch (error) {
             toast.error("Something went wrong");
             return { items: [], totalItems: 0, hasNextPage: false };
@@ -51,6 +64,12 @@ const ReusedPasswords = () => {
 
     const items = data?.pages.flatMap((page) => page.items);
 
+    useEffect(() => {
+        if (items) {
+            setData((prev) => ({ ...prev, reusedPasswords: items }));
+        }
+    }, [items]);
+
     if (status === "pending") return (
         <NotificationsLoader
             title="Reused Passwords"
@@ -63,8 +82,6 @@ const ReusedPasswords = () => {
             Icon={RefreshCw}
         />
     )
-
-    console.log("Items with reused passwords: ", items)
 
     return (
         <div>
@@ -82,9 +99,22 @@ const ReusedPasswords = () => {
 
             {items.length > 0 ? (
                 <ul className="p-3">
-                    {items.map((item) => {
+                    {items.map((item, index) => {
+                        const isActive = active.notification === "reusedPasswords"
+                            && active.index === index;
+
                         return item ? (
-                            <li key={item.id} className="flex items-center gap-2 p-3 rounded-lg transition-colors cursor-pointer hover:bg-black/5">
+                            <li
+                                key={item.id}
+                                className={cn(
+                                    "flex items-center gap-2 p-3 rounded-lg transition-colors cursor-pointer hover:bg-black/5",
+                                    isActive && "bg-primary hover:bg-primary/90"
+                                )}
+                                onClick={() => setActive({
+                                    notification: "reusedPasswords",
+                                    index
+                                })}
+                            >
                                 <div className="relative">
                                     <Image
                                         src="/padlock.png"
@@ -95,10 +125,16 @@ const ReusedPasswords = () => {
                                     />
                                 </div>
                                 <div>
-                                    <span className="text-sm text-left font-medium text-zinc-900 block -mb-0.5">
+                                    <span className={cn(
+                                        "font-medium text-left text-zinc-900 block -mb-0.5",
+                                        isActive && "text-zinc-100"
+                                    )}>
                                         {item.siteName}
                                     </span>
-                                    <span className="text-muted-foreground text-xs">
+                                    <span className={cn(
+                                        "text-muted-foreground text-xs",
+                                        isActive && "text-zinc-100"
+                                    )}>
                                         {item.email}
                                     </span>
                                 </div>

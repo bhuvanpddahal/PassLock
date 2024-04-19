@@ -1,9 +1,88 @@
 import Image from "next/image";
+import { toast } from "sonner";
 import { ShieldOff } from "lucide-react";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { Dispatch, SetStateAction, useEffect } from "react";
 
+import ItemLoader from "../item-loader";
+import NotificationsError from "./notifications-error";
+import NotificationsLoader from "./notifications-loader";
+import { cn } from "@/lib/utils";
+import type { Active, Data } from "./page";
+import { NotificationsData } from "../types";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { ITEMS_PER_NOTIFICATION } from "../constant";
+import { getUserItemsWithUnsecuredWebsite } from "@/actions/item";
 
-const UnsecuredWebsites = () => {
+interface fetchItemsWithUnsecuredWebsiteParams {
+    pageParam: number;
+}
+
+interface UnsecuredWebsitesProps {
+    active: Active;
+    setActive: Dispatch<SetStateAction<Active>>;
+    setData: Dispatch<SetStateAction<Data>>;
+}
+
+const UnsecuredWebsites = ({
+    active,
+    setActive,
+    setData
+}: UnsecuredWebsitesProps) => {
+    const fetchItemsWithUnsecuredWebsite = async ({
+        pageParam
+    }: fetchItemsWithUnsecuredWebsiteParams) => {
+        try {
+            const payload = { page: pageParam, limit: ITEMS_PER_NOTIFICATION };
+            const data = await getUserItemsWithUnsecuredWebsite(payload);
+            return data as NotificationsData;
+        } catch (error) {
+            toast.error("Something went wrong");
+            return { items: [], totalItems: 0, hasNextPage: false };
+        }
+    };
+
+    const {
+        data,
+        status,
+        hasNextPage,
+        fetchNextPage,
+        isFetchingNextPage
+    } = useInfiniteQuery({
+        queryKey: ["favorites", { for: "unsecured-websites" }],
+        queryFn: fetchItemsWithUnsecuredWebsite,
+        initialPageParam: 1,
+        getNextPageParam: (lastPage, pages) => {
+            if (lastPage.hasNextPage) {
+                return pages.length + 1;
+            } else {
+                return null;
+            }
+        }
+    });
+
+    const items = data?.pages.flatMap((page) => page.items);
+
+    useEffect(() => {
+        if (items) {
+            setData((prev) => ({ ...prev, unsecuredWebsites: items }));
+        }
+    }, [items]);
+
+    if (status === "pending") return (
+        <NotificationsLoader
+            title="Unsecured Websites"
+            Icon={ShieldOff}
+        />
+    )
+    if (!items) return (
+        <NotificationsError
+            title="Unsecured Websites"
+            Icon={ShieldOff}
+        />
+    )
+
     return (
         <div>
             <h4 className="flex items-center justify-between bg-zinc-100 px-3 py-1">
@@ -13,86 +92,73 @@ const UnsecuredWebsites = () => {
                         Unsecured Websites
                     </div>
                 </div>
-                <Badge variant="destructive">3</Badge>
+                <Badge variant="destructive">
+                    {items.length}
+                </Badge>
             </h4>
-            <ul className="p-3">
-                <li className="flex items-center gap-2 p-3 rounded-lg transition-colors cursor-pointer hover:bg-black/5">
-                    <div className="relative">
-                        <Image
-                            src="/padlock.png"
-                            alt="Account"
-                            height={40}
-                            width={40}
-                            className="rounded-md"
-                        />
-                    </div>
-                    <div>
-                        <span className="text-sm text-left font-medium text-zinc-900 block -mb-0.5">
-                            Amazon
-                        </span>
-                        <span className="text-muted-foreground text-xs">
-                            abc@gmail.com
-                        </span>
-                    </div>
-                </li>
-                <li className="flex items-center gap-2 p-3 rounded-lg transition-colors cursor-pointer hover:bg-black/5">
-                    <div className="relative">
-                        <Image
-                            src="/padlock.png"
-                            alt="Account"
-                            height={40}
-                            width={40}
-                            className="rounded-md"
-                        />
-                    </div>
-                    <div>
-                        <span className="text-sm text-left font-medium text-zinc-900 block -mb-0.5">
-                            Amazon
-                        </span>
-                        <span className="text-muted-foreground text-xs">
-                            abc@gmail.com
-                        </span>
-                    </div>
-                </li>
-                <li className="flex items-center gap-2 p-3 rounded-lg transition-colors cursor-pointer hover:bg-black/5">
-                    <div className="relative">
-                        <Image
-                            src="/padlock.png"
-                            alt="Account"
-                            height={40}
-                            width={40}
-                            className="rounded-md"
-                        />
-                    </div>
-                    <div>
-                        <span className="text-sm text-left font-medium text-zinc-900 block -mb-0.5">
-                            Amazon
-                        </span>
-                        <span className="text-muted-foreground text-xs">
-                            abc@gmail.com
-                        </span>
-                    </div>
-                </li>
-                <li className="flex items-center gap-2 p-3 rounded-lg transition-colors cursor-pointer hover:bg-black/5">
-                    <div className="relative">
-                        <Image
-                            src="/padlock.png"
-                            alt="Account"
-                            height={40}
-                            width={40}
-                            className="rounded-md"
-                        />
-                    </div>
-                    <div>
-                        <span className="text-sm text-left font-medium text-zinc-900 block -mb-0.5">
-                            Amazon
-                        </span>
-                        <span className="text-muted-foreground text-xs">
-                            abc@gmail.com
-                        </span>
-                    </div>
-                </li>
-            </ul>
+
+            {items.length > 0 ? (
+                <ul className="p-3">
+                    {items.map((item, index) => {
+                        const isActive = active.notification === "unsecuredWebsites"
+                            && active.index === index;
+
+                        return item ? (
+                            <li
+                                key={item.id}
+                                className={cn(
+                                    "flex items-center gap-2 p-3 rounded-lg transition-colors cursor-pointer hover:bg-black/5",
+                                    isActive && "bg-primary hover:bg-primary/90"
+                                )}
+                                onClick={() => setActive({
+                                    notification: "unsecuredWebsites",
+                                    index
+                                })}
+                            >
+                                <div className="relative">
+                                    <Image
+                                        src="/padlock.png"
+                                        alt="Account"
+                                        height={40}
+                                        width={40}
+                                        className="rounded-md"
+                                    />
+                                </div>
+                                <div>
+                                    <span className={cn(
+                                        "font-medium text-left text-zinc-900 block -mb-0.5",
+                                        isActive && "text-zinc-100"
+                                    )}>
+                                        {item.siteName}
+                                    </span>
+                                    <span className={cn(
+                                        "text-muted-foreground text-xs",
+                                        isActive && "text-zinc-100"
+                                    )}>
+                                        {item.email}
+                                    </span>
+                                </div>
+                            </li>
+                        ) : null;
+                    })}
+                    {hasNextPage && !isFetchingNextPage && (
+                        <Button
+                            variant="outline"
+                            className="mt-2 w-full"
+                            onClick={() => {
+                                if (fetchNextPage) fetchNextPage();
+                            }}
+                        >
+                            Load More
+                        </Button>
+                    )}
+                    {isFetchingNextPage && <ItemLoader />}
+                </ul>
+            ) : (
+                <p className="text-muted-foreground text-[13px] px-6 py-3">
+                    No unsecured website found.
+                </p>
+            )}
         </div>
     )
 };

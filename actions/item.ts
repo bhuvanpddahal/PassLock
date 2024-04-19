@@ -3,6 +3,11 @@
 import Cryptr from "cryptr";
 import { cookies } from "next/headers";
 
+import {
+    getItemsWithReusedPassword,
+    getItemsWithUnsecuredWebsite,
+    getItemsWithVulnerablePassword
+} from "@/lib/queries/item";
 import { db } from "@/lib/db";
 import {
     CreateItemPayload,
@@ -16,10 +21,6 @@ import {
     GetUserNotificationPayload,
     GetUserNotificationValidator
 } from "@/lib/validators/item";
-import {
-    getItemsWithReusedPassword,
-    getItemsWithVulnerablePassword
-} from "@/lib/queries/item";
 import { getUserById } from "@/lib/queries/user";
 
 const cryptr = new Cryptr(process.env.CRYPTR_SECRET_KEY!);
@@ -293,6 +294,34 @@ export const getUserItemsWithReusedPassword = async (payload: GetUserNotificatio
         if (!dbUser) return { error: "User not found" };
 
         const data = await getItemsWithReusedPassword(
+            userId,
+            page,
+            limit
+        );
+
+        return data;
+    } catch (error) {
+        console.error(error);
+        return { error: "Something went wrong" };
+    }
+};
+
+export const getUserItemsWithUnsecuredWebsite = async (payload: GetUserNotificationPayload) => {
+    try {
+        const validatedFields = GetUserNotificationValidator.safeParse(payload);
+        if (!validatedFields.success) return { error: "Invalid fields" };
+
+        const { page, limit } = validatedFields.data;
+
+        const userCookie = cookies().get("user");
+        if (!userCookie) return { error: "Unauthorized" };
+
+        const userId = JSON.parse(userCookie.value).id || "";
+
+        const dbUser = await getUserById(userId);
+        if (!dbUser) return { error: "User not found" };
+
+        const data = await getItemsWithUnsecuredWebsite(
             userId,
             page,
             limit

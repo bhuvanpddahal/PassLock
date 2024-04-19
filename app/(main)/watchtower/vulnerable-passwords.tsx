@@ -2,10 +2,13 @@ import Image from "next/image";
 import { toast } from "sonner";
 import { TriangleAlert } from "lucide-react";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { Dispatch, SetStateAction, useEffect } from "react";
 
 import ItemLoader from "../item-loader";
 import NotificationsError from "./notifications-error";
 import NotificationsLoader from "./notifications-loader";
+import { cn } from "@/lib/utils";
+import type { Active, Data } from "./page";
 import { NotificationsData } from "../types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -16,7 +19,17 @@ interface fetchItemsWithVulnerablePasswordParams {
     pageParam: number;
 }
 
-const VulnerablePasswords = () => {
+interface VulnerablePasswordsProps {
+    active: Active;
+    setActive: Dispatch<SetStateAction<Active>>;
+    setData: Dispatch<SetStateAction<Data>>;
+}
+
+const VulnerablePasswords = ({
+    active,
+    setActive,
+    setData
+}: VulnerablePasswordsProps) => {
     const fetchItemsWithVulnerablePassword = async ({
         pageParam
     }: fetchItemsWithVulnerablePasswordParams) => {
@@ -51,6 +64,12 @@ const VulnerablePasswords = () => {
 
     const items = data?.pages.flatMap((page) => page.items);
 
+    useEffect(() => {
+        if (items) {
+            setData((prev) => ({ ...prev, vulnerablePasswords: items }));
+        }
+    }, [items]);
+
     if (status === "pending") return (
         <NotificationsLoader
             title="Vulnerable Passwords"
@@ -81,9 +100,22 @@ const VulnerablePasswords = () => {
 
             {items.length > 0 ? (
                 <ul className="p-3">
-                    {items.map((item) => {
+                    {items.map((item, index) => {
+                        const isActive = active.notification === "vulnerablePasswords"
+                            && active.index === index;
+
                         return item ? (
-                            <li key={item.id} className="flex items-center gap-2 p-3 rounded-lg transition-colors cursor-pointer hover:bg-black/5">
+                            <li
+                                key={item.id}
+                                className={cn(
+                                    "flex items-center gap-2 p-3 rounded-lg transition-colors cursor-pointer hover:bg-black/5",
+                                    isActive && "bg-primary hover:bg-primary/90"
+                                )}
+                                onClick={() => setActive({
+                                    notification: "vulnerablePasswords",
+                                    index
+                                })}
+                            >
                                 <div className="relative">
                                     <Image
                                         src="/padlock.png"
@@ -94,10 +126,16 @@ const VulnerablePasswords = () => {
                                     />
                                 </div>
                                 <div>
-                                    <span className="text-sm text-left font-medium text-zinc-900 block -mb-0.5">
+                                    <span className={cn(
+                                        "font-medium text-left text-zinc-900 block -mb-0.5",
+                                        isActive && "text-zinc-100"
+                                    )}>
                                         {item.siteName}
                                     </span>
-                                    <span className="text-muted-foreground text-xs">
+                                    <span className={cn(
+                                        "text-muted-foreground text-xs",
+                                        isActive && "text-zinc-100"
+                                    )}>
                                         {item.email}
                                     </span>
                                 </div>

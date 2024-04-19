@@ -10,7 +10,7 @@ const Header = () => {
     const { open } = useNewItem();
 
     return (
-        <header className="w-full border-b border-zinc-300 p-3 flex items-center justify-between">
+        <header className="sticky top-0 z-20 bg-white w-full border-b border-zinc-300 p-3 flex items-center justify-between">
             <div className="flex items-center gap-4 lg:hidden">
                 <MobileSidebar />
                 <Logo
