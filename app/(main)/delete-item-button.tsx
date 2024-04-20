@@ -22,7 +22,6 @@ import { Button } from "@/components/ui/button";
 interface DeleteItemButtonProps {
     id: string;
     siteName: string;
-    siteIcon: string | null;
     email: string;
     favorited: boolean;
 }
@@ -30,7 +29,6 @@ interface DeleteItemButtonProps {
 const DeleteItemButton = ({
     id,
     siteName,
-    siteIcon,
     email,
     favorited
 }: DeleteItemButtonProps) => {
@@ -78,7 +76,7 @@ const DeleteItemButton = ({
                     <div className="flex items-center gap-2 p-3">
                         <div className="relative">
                             <Image
-                                src={siteIcon ? siteIcon : "/padlock.png"}
+                                src="/padlock.png"
                                 alt="Account"
                                 height={40}
                                 width={40}

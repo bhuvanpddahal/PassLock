@@ -42,7 +42,6 @@ interface EditItemButtonProps {
     id: string;
     siteName: string;
     siteLink: string;
-    siteIcon: string | null;
     email: string;
     password: string;
     favorited: boolean;
@@ -52,7 +51,6 @@ const EditItemButton = ({
     id,
     siteName,
     siteLink,
-    siteIcon,
     email,
     password,
     favorited
@@ -67,7 +65,6 @@ const EditItemButton = ({
             id,
             siteName,
             siteLink,
-            siteIcon: siteIcon ? siteIcon : undefined,
             email,
             password,
             favorited
@@ -97,7 +94,6 @@ const EditItemButton = ({
         form.setValue("id", id);
         form.setValue("siteName", siteName);
         form.setValue("siteLink", siteLink);
-        form.setValue("siteIcon", siteIcon || undefined);
         form.setValue("email", email);
         form.setValue("password", password);
         form.setValue("favorited", favorited);

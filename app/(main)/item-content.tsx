@@ -1,6 +1,8 @@
+import moment from "moment";
 import Image from "next/image";
 import {
     Check,
+    Clock,
     Copy,
     Eye,
     EyeOff,
@@ -18,20 +20,20 @@ interface ItemContentProps {
     id: string;
     siteName: string;
     siteLink: string;
-    siteIcon: string | null;
     email: string;
     password: string;
     favorited: boolean;
+    addedAt: Date;
 }
 
 const ItemContent = ({
     id,
     siteName,
     siteLink,
-    siteIcon,
     email,
     password,
-    favorited
+    favorited,
+    addedAt
 }: ItemContentProps) => {
     const [isCopied, setIsCopied] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
@@ -51,28 +53,34 @@ const ItemContent = ({
 
     return (
         <div className="flex-1 p-3 pl-4">
-            <div className="flex items-center justify-end gap-2">
-                <EditItemButton
-                    id={id}
-                    siteName={siteName}
-                    siteLink={siteLink}
-                    siteIcon={siteIcon}
-                    email={email}
-                    password={password}
-                    favorited={favorited}
-                />
-                <DeleteItemButton
-                    id={id}
-                    siteName={siteName}
-                    siteIcon={siteIcon}
-                    email={email}
-                    favorited={favorited}
-                />
+            <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1 text-muted-foreground">
+                    <Clock className="h-4 w-4" />
+                    <span className="text-xs font-medium">
+                        Added {moment(addedAt).startOf("seconds").fromNow()}
+                    </span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <EditItemButton
+                        id={id}
+                        siteName={siteName}
+                        siteLink={siteLink}
+                        email={email}
+                        password={password}
+                        favorited={favorited}
+                    />
+                    <DeleteItemButton
+                        id={id}
+                        siteName={siteName}
+                        email={email}
+                        favorited={favorited}
+                    />
+                </div>
             </div>
             <div className="flex items-center gap-3 mt-4 mb-8">
                 <div className="relative">
                     <Image
-                        src={siteIcon ? siteIcon : "/padlock.png"}
+                        src="/padlock.png"
                         alt="Account"
                         height={90}
                         width={90}
@@ -136,7 +144,7 @@ const ItemContent = ({
                             </Button>
                         </div>
                         <div className={cn(
-                            "text-xs text-muted-foreground text-right",
+                            "text-xs text-muted-foreground text-right font-medium",
                             passwordStrength(password).id === 0 && "text-red-500",
                             passwordStrength(password).id === 1 && "text-orange-500",
                             passwordStrength(password).id === 2 && "text-yellow-700",

@@ -6,7 +6,6 @@ import { Account } from "@prisma/client";
 
 interface PreviousPassword {
     siteName: string;
-    siteIcon: string | null;
     email: string;
     password: string;
     favorited: boolean;
@@ -15,7 +14,6 @@ interface PreviousPassword {
 export interface Item extends Account {
     originalPasswordOf: {
         siteName: string;
-        siteIcon: string | null;
         email: string;
         favorited: boolean;
     };
@@ -88,7 +86,6 @@ export const getItemsWithReusedPassword = async (
                     password: decryptedPassword,
                     originalPasswordOf: {
                         siteName: previousPasswords[originalPasswordIndex].siteName,
-                        siteIcon: previousPasswords[originalPasswordIndex].siteIcon,
                         email: previousPasswords[originalPasswordIndex].email,
                         favorited: previousPasswords[originalPasswordIndex].favorited
                     }
@@ -96,14 +93,13 @@ export const getItemsWithReusedPassword = async (
             } else { // If password is original
                 previousPasswords.push({
                     siteName: initialItems[i].siteName,
-                    siteIcon: initialItems[i].siteIcon,
                     email: initialItems[i].email,
                     password: decryptedPassword,
                     favorited: initialItems[i].favorited
                 });
             }
         }
-        
+
         const reversedItems = itemsWithReusedPasswords.reverse();
         const items = reversedItems.slice((page - 1) * limit, page * limit);
         const totalItems = reversedItems.length;
@@ -144,6 +140,58 @@ export const getItemsWithUnsecuredWebsite = async (
         const hasNextPage = polishedItems.length > page * limit;
 
         return { items, totalItems, hasNextPage };
+    } catch (error) {
+        return null;
+    }
+};
+
+export const getSearchItems = async (
+    query: string,
+    page: number,
+    limit: number
+) => {
+    try {
+        // Escape special characters in the query string to avoid regex injection
+        const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+        // Construct the regex pattern for case-insensitive search
+        const regexPattern = new RegExp(escapedQuery, 'i');
+
+        // Convert the regex pattern to a string
+        const regexQuery = regexPattern.source;
+
+        const items = await db.account.findMany({
+            where: {
+                OR: [{
+                    siteName: { contains: regexQuery, mode: "insensitive" }
+                }, {
+                    email: { contains: regexQuery, mode: "insensitive" }
+                }]
+            },
+            orderBy: {
+                addedAt: "desc"
+            },
+            take: limit,
+            skip: (page - 1) * limit
+        });
+
+        const polishedItems = items.map((item) => ({
+            ...item,
+            password: cryptr.decrypt(item.password)
+        }));
+
+        const totalItems = await db.account.count({
+            where: {
+                OR: [{
+                    siteName: { contains: regexQuery, mode: "insensitive" }
+                }, {
+                    email: { contains: regexQuery, mode: "insensitive" }
+                }]
+            }
+        });
+        const hasNextPage = totalItems > (page * limit);
+
+        return { items: polishedItems, totalItems, hasNextPage };
     } catch (error) {
         return null;
     }

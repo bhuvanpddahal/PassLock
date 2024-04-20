@@ -1,9 +1,15 @@
 const ItemContentLoader = () => {
     return (
         <div className="flex-1 p-3 pl-4">
-            <div className="flex items-center justify-end gap-2">
-                <div className="h-9 rounded-md w-[71px] bg-zinc-300 animate-pulse" />
-                <div className="h-9 rounded-md w-[44px] bg-zinc-300 animate-pulse" />
+            <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1 text-muted-foreground">
+                    <div className="h-4 w-4 rounded-full bg-zinc-300 animate-pulse" />
+                    <div className="h-[10px] w-[108px] bg-zinc-300 animate-pulse rounded-full" />
+                </div>
+                <div className="flex items-center gap-2">
+                    <div className="h-9 rounded-md w-[71px] bg-zinc-300 animate-pulse" />
+                    <div className="h-9 rounded-md w-[44px] bg-zinc-300 animate-pulse" />
+                </div>
             </div>
             <div className="flex items-center gap-3 mt-4 mb-8">
                 <div className="h-[90px] w-[90px] rounded-md bg-zinc-300 animate-pulse" />

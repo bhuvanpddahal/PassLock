@@ -6,7 +6,8 @@ import { cookies } from "next/headers";
 import {
     getItemsWithReusedPassword,
     getItemsWithUnsecuredWebsite,
-    getItemsWithVulnerablePassword
+    getItemsWithVulnerablePassword,
+    getSearchItems
 } from "@/lib/queries/item";
 import { db } from "@/lib/db";
 import {
@@ -19,7 +20,9 @@ import {
     GetUserItemsPayload,
     GetUserItemsValidator,
     GetUserNotificationPayload,
-    GetUserNotificationValidator
+    GetUserNotificationValidator,
+    GetUserSearchItemsPayload,
+    GetUserSearchItemsValidator
 } from "@/lib/validators/item";
 import { getUserById } from "@/lib/queries/user";
 
@@ -319,6 +322,34 @@ export const getUserItemsWithUnsecuredWebsite = async (payload: GetUserNotificat
 
         const data = await getItemsWithUnsecuredWebsite(
             userId,
+            page,
+            limit
+        );
+
+        return data;
+    } catch (error) {
+        console.error(error);
+        return { error: "Something went wrong" };
+    }
+};
+
+export const getUserSearchItems = async (payload: GetUserSearchItemsPayload) => {
+    try {
+        const validatedFields = GetUserSearchItemsValidator.safeParse(payload);
+        if (!validatedFields.success) return { error: "Invalid fields" };
+
+        const { query, page, limit } = validatedFields.data;
+
+        const userCookie = cookies().get("user");
+        if (!userCookie) return { error: "Unauthorized" };
+
+        const userId = JSON.parse(userCookie.value).id || "";
+
+        const dbUser = await getUserById(userId);
+        if (!dbUser) return { error: "User not found" };
+
+        const data = await getSearchItems(
+            query,
             page,
             limit
         );

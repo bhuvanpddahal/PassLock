@@ -58,7 +58,7 @@ const WatchtowerPage = () => {
                                 <span className="flex items-center gap-2 p-3">
                                     <div className="relative">
                                         <Image
-                                            src={originalPasswordOf.siteIcon ? originalPasswordOf.siteIcon : "/padlock.png"}
+                                            src="/padlock.png"
                                             alt="Account"
                                             height={40}
                                             width={40}
@@ -101,10 +101,10 @@ const WatchtowerPage = () => {
                         id={data[active.notification][active.index].id}
                         siteName={data[active.notification][active.index].siteName}
                         siteLink={data[active.notification][active.index].siteLink}
-                        siteIcon={data[active.notification][active.index].siteIcon}
                         email={data[active.notification][active.index].email}
                         password={data[active.notification][active.index].password}
                         favorited={data[active.notification][active.index].favorited}
+                        addedAt={data[active.notification][active.index].addedAt}
                     />
                 ) : (
                     <ItemContentLoader />

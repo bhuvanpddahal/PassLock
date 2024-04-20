@@ -30,6 +30,7 @@ interface ItemsProps {
         hasNextPage: boolean;
     }, unknown>, Error>>;
     isFetchingNextPage: boolean;
+    isSearching?: boolean;
 }
 
 const Items = ({
@@ -40,7 +41,8 @@ const Items = ({
     totalItems,
     hasNextPage,
     fetchNextPage,
-    isFetchingNextPage
+    isFetchingNextPage,
+    isSearching = false
 }: ItemsProps) => {
     const { ref, inView } = useInView();
 
@@ -125,7 +127,10 @@ const Items = ({
                         width={80}
                     />
                     <p className="text-muted-foreground">
-                        Start by creating a new item.
+                        {isSearching
+                            ? "Search result is empty."
+                            : "Start by creating a new item."
+                        }
                     </p>
                 </div>
             )}
