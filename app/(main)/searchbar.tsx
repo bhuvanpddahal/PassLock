@@ -1,17 +1,14 @@
 import { Search } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { KeyboardEvent, useState } from "react";
+import { KeyboardEvent, useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { Input } from "@/components/ui/input";
 
-interface SearchbarProps {
-    query: string;
-}
-
-const Searchbar = ({
-    query
-}: SearchbarProps) => {
+const Searchbar = () => {
     const router = useRouter();
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
+    const query = searchParams.get("query") || "";
     const [input, setInput] = useState(query);
 
     const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -19,6 +16,12 @@ const Searchbar = ({
             router.push(`/search?query=${input}`);
         }
     };
+
+    useEffect(() => {
+        if (!pathname.includes("/search")) {
+            setInput("");
+        }
+    }, [pathname]);
 
     return (
         <div className="relative max-w-lg z-50 w-full">

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Play } from "next/font/google";
+import { Exo_2 } from "next/font/google";
 
 import { cn } from "@/lib/utils";
 
@@ -9,7 +9,7 @@ interface LogoProps {
     size?: "default" | "small";
 }
 
-const play = Play({
+const exo2 = Exo_2({
     subsets: ["latin"],
     weight: ["700"]
 });
@@ -27,7 +27,7 @@ const Logo = ({
                 width={size === "default" ? 35 : 25}
             />
             <h1 className={cn(
-                play.className,
+                exo2.className,
                 "font-bold text-xl text-slate-900",
                 className,
                 size === "small" && "text-sm"

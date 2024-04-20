@@ -1,7 +1,5 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
-
 import Searchbar from "./searchbar";
 import Logo from "@/components/logo";
 import MobileSidebar from "./mobile-sidebar";
@@ -10,8 +8,6 @@ import { useNewItem } from "@/hooks/use-new-item-modal";
 
 const Header = () => {
     const { open } = useNewItem();
-    const searchParams = useSearchParams();
-    const query = searchParams.get("query") || "";
 
     return (
         <header className="sticky top-0 z-20 bg-white w-full border-b border-zinc-300 p-3 flex items-center justify-between">
@@ -23,9 +19,9 @@ const Header = () => {
                 />
             </div>
             <div className="hidden lg:block" />
-            <Searchbar
-                query={query}
-            />
+
+            <Searchbar />
+            
             <Button onClick={open}>
                 New Item
             </Button>

@@ -49,7 +49,6 @@ const SignupPage = () => {
                     setError(data.error);
                 }
                 if (data?.success) {
-                    form.reset();
                     setSuccess(data.success);
                     router.push("/dashboard");
                 }

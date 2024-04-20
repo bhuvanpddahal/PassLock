@@ -7,7 +7,7 @@ const Footer = () => {
             <div className="max-w-3xl mx-auto flex items-center justify-between">
                 <div className="text-[13px] text-zinc-600">
                     <p>© 2024 PassLock. All rights reserved.</p>
-                    <p>4711 Yonge St, 10th Floor, Toronto, Ontario, M2N 6K8, Canada.</p>
+                    <p>4711 JPT, M18 Chowk, Mars.</p>
                 </div>
                 <Link href="https://github.com/BhuvanPdDahal/PassLock">
                     <GithubIcon
