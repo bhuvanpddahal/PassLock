@@ -53,7 +53,7 @@ const WatchtowerPage = () => {
                             </p>
                         )}
                         {active.notification === "reusedPasswords" && (
-                            <p className="text-[13px]">
+                            <div className="text-[13px]">
                                 It appears that you&apos;ve used this password for multiple accounts. Reusing passwords across different platforms significantly increases the risk of your accounts being compromised. This password was originally used in the following account:
                                 <span className="flex items-center gap-2 p-3">
                                     <div className="relative">
@@ -83,7 +83,7 @@ const WatchtowerPage = () => {
                                     </div>
                                 </span>
                                 PassLock recommends to generate a unique password for each account. This prevents a single breach from compromising multiple accounts.
-                            </p>
+                            </div>
                         )}
                         {active.notification === "unsecuredWebsites" && (
                             <p className="text-[13px]">

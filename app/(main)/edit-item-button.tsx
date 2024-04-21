@@ -97,11 +97,11 @@ const EditItemButton = ({
         form.setValue("email", email);
         form.setValue("password", password);
         form.setValue("favorited", favorited);
-    }, [id, siteName, siteLink, email, password, favorited]);
+    }, [id]);
 
     return (
         <Dialog>
-            <DialogTrigger>
+            <DialogTrigger asChild>
                 <Button
                     variant="ghost"
                     className="gap-1"

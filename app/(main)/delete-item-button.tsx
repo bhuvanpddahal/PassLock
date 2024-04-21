@@ -58,7 +58,7 @@ const DeleteItemButton = ({
 
     return (
         <AlertDialog>
-            <AlertDialogTrigger>
+            <AlertDialogTrigger asChild>
                 <Button
                     variant="destructive"
                     className="gap-1"

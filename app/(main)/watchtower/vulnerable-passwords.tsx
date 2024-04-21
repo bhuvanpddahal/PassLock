@@ -22,12 +22,14 @@ interface fetchItemsWithVulnerablePasswordParams {
 interface VulnerablePasswordsProps {
     active: Active;
     setActive: Dispatch<SetStateAction<Active>>;
+    notificationsData: Data;
     setData: Dispatch<SetStateAction<Data>>;
 }
 
 const VulnerablePasswords = ({
     active,
     setActive,
+    notificationsData,
     setData
 }: VulnerablePasswordsProps) => {
     const fetchItemsWithVulnerablePassword = async ({
@@ -66,6 +68,7 @@ const VulnerablePasswords = ({
 
     useEffect(() => {
         if (items) {
+            if (notificationsData.vulnerablePasswords.length === items.length) return;
             setData((prev) => ({ ...prev, vulnerablePasswords: items }));
         }
     }, [items, setData]);

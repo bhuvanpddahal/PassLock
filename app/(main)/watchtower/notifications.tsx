@@ -34,16 +34,19 @@ const Notifications = ({
                 <VulnerablePasswords
                     active={active}
                     setActive={setActive}
+                    notificationsData={data}
                     setData={setData}
                 />
                 <ReusedPasswords
                     active={active}
                     setActive={setActive}
+                    notificationsData={data}
                     setData={setData}
                 />
                 <UnsecuredWebsites
                     active={active}
                     setActive={setActive}
+                    notificationsData={data}
                     setData={setData}
                 />
             </div>

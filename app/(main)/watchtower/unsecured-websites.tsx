@@ -22,12 +22,14 @@ interface fetchItemsWithUnsecuredWebsiteParams {
 interface UnsecuredWebsitesProps {
     active: Active;
     setActive: Dispatch<SetStateAction<Active>>;
+    notificationsData: Data;
     setData: Dispatch<SetStateAction<Data>>;
 }
 
 const UnsecuredWebsites = ({
     active,
     setActive,
+    notificationsData,
     setData
 }: UnsecuredWebsitesProps) => {
     const fetchItemsWithUnsecuredWebsite = async ({
@@ -50,7 +52,7 @@ const UnsecuredWebsites = ({
         fetchNextPage,
         isFetchingNextPage
     } = useInfiniteQuery({
-        queryKey: ["favorites", { for: "unsecured-websites" }],
+        queryKey: ["watchtower", { for: "unsecured-websites" }],
         queryFn: fetchItemsWithUnsecuredWebsite,
         initialPageParam: 1,
         getNextPageParam: (lastPage, pages) => {
@@ -66,6 +68,7 @@ const UnsecuredWebsites = ({
 
     useEffect(() => {
         if (items) {
+            if (notificationsData.unsecuredWebsites.length === items.length) return;
             setData((prev) => ({ ...prev, unsecuredWebsites: items }));
         }
     }, [items, setData]);

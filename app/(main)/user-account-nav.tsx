@@ -4,8 +4,8 @@ import Link from "next/link";
 import {
     ChevronDown,
     LogOut,
-    UserRound,
-    Star
+    Star,
+    Bell
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -62,9 +62,9 @@ const UserAccountNav = () => {
                 </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                    <Link href={`/users/${user.id}`} className='flex items-center gap-2'>
-                        <UserRound className='h-4 w-4 text-zinc-600' />
-                        Profile
+                    <Link href="/watchtower" className='flex items-center gap-2'>
+                        <Bell className='h-4 w-4 text-zinc-600' />
+                        Notifications
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>

@@ -22,12 +22,14 @@ interface fetchItemsWithReusedPasswordParams {
 interface ReusedPasswordsProps {
     active: Active;
     setActive: Dispatch<SetStateAction<Active>>;
+    notificationsData: Data;
     setData: Dispatch<SetStateAction<Data>>;
 }
 
 const ReusedPasswords = ({
     active,
     setActive,
+    notificationsData,
     setData
 }: ReusedPasswordsProps) => {
     const fetchItemsWithReusedPassword = async ({
@@ -50,7 +52,7 @@ const ReusedPasswords = ({
         fetchNextPage,
         isFetchingNextPage
     } = useInfiniteQuery({
-        queryKey: ["favorites", { for: "reused-passwords" }],
+        queryKey: ["watchtower", { for: "reused-passwords" }],
         queryFn: fetchItemsWithReusedPassword,
         initialPageParam: 1,
         getNextPageParam: (lastPage, pages) => {
@@ -66,6 +68,7 @@ const ReusedPasswords = ({
 
     useEffect(() => {
         if (items) {
+            if (notificationsData.reusedPasswords.length === items.length) return;
             setData((prev) => ({ ...prev, reusedPasswords: items }));
         }
     }, [items, setData]);
