@@ -74,7 +74,7 @@ const NewItemModal = () => {
                 <DialogHeader>
                     <DialogTitle>New Item</DialogTitle>
                     <DialogDescription>
-                        Create a new item to store in PassLock. Don't worry, you can edit the values at anytime.
+                        Create a new item to store in PassLock. Don&apos;t worry, you can edit the values at anytime.
                     </DialogDescription>
                 </DialogHeader>
                 <Form {...form}>

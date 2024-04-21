@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useCookies } from "next-client-cookies";
 
 const HeroSection = () => {
@@ -33,11 +34,14 @@ const HeroSection = () => {
                         </Link>
                     )}
                 </div>
-                <div className="w-full lg:w-[60%]">
-                    <img
+                <div className="relative w-full lg:w-[60%]">
+                    <Image
                         src="/dashboard-page.png"
                         alt="Dashboard Page"
-                        className="w-full h-fit rounded-md shadow-md"
+                        width={-1}
+                        height={-1}
+                        layout="responsive"
+                        className="w-full h-auto rounded-md shadow-md"
                     />
                 </div>
             </div>

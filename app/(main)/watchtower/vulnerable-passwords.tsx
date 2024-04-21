@@ -68,7 +68,7 @@ const VulnerablePasswords = ({
         if (items) {
             setData((prev) => ({ ...prev, vulnerablePasswords: items }));
         }
-    }, [items]);
+    }, [items, setData]);
 
     if (status === "pending") return (
         <NotificationsLoader

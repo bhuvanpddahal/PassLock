@@ -49,12 +49,12 @@ const WatchtowerPage = () => {
                             <p className="text-[13px]">
                                 It seems like your password is not strong enough to protect your account effectively. Strong passwords are crucial for keeping your personal information secure.
                                 <br />
-                                PassLock recommends to create a new password with a mix of uppercase letters, lowercase letters, numbers, and special characters and stay away from easily guessable phrases, such as "password123" or "qwerty".
+                                PassLock recommends to create a new password with a mix of uppercase letters, lowercase letters, numbers, and special characters and stay away from easily guessable phrases, such as &quot;password123&quot; or &quot;qwerty&quot;.
                             </p>
                         )}
                         {active.notification === "reusedPasswords" && (
                             <p className="text-[13px]">
-                                It appears that you've used this password for multiple accounts. Reusing passwords across different platforms significantly increases the risk of your accounts being compromised. This password was originally used in the following account:
+                                It appears that you&apos;ve used this password for multiple accounts. Reusing passwords across different platforms significantly increases the risk of your accounts being compromised. This password was originally used in the following account:
                                 <span className="flex items-center gap-2 p-3">
                                     <div className="relative">
                                         <Image
@@ -87,9 +87,9 @@ const WatchtowerPage = () => {
                         )}
                         {active.notification === "unsecuredWebsites" && (
                             <p className="text-[13px]">
-                                It seems you've created an account on a website that lacks proper security measures. Your safety and privacy are our top priorities, and we want to ensure that your personal information remains protected.
+                                It seems you&apos;ve created an account on a website that lacks proper security measures. Your safety and privacy are our top priorities, and we want to ensure that your personal information remains protected.
                                 <br />
-                                PassLock recommends reviewing the security practices of the website where you've created an account. If you find any malicious practices, don't hesitate to delete the account from that site.
+                                PassLock recommends reviewing the security practices of the website where you&apos;ve created an account. If you find any malicious practices, don&apos;t hesitate to delete the account from that site.
                             </p>
                         )}
                     </div>

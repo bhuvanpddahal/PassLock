@@ -68,7 +68,7 @@ const ReusedPasswords = ({
         if (items) {
             setData((prev) => ({ ...prev, reusedPasswords: items }));
         }
-    }, [items]);
+    }, [items, setData]);
 
     if (status === "pending") return (
         <NotificationsLoader

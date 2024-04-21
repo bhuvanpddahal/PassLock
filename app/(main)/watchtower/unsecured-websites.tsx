@@ -68,7 +68,7 @@ const UnsecuredWebsites = ({
         if (items) {
             setData((prev) => ({ ...prev, unsecuredWebsites: items }));
         }
-    }, [items]);
+    }, [items, setData]);
 
     if (status === "pending") return (
         <NotificationsLoader

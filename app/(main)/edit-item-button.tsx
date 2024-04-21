@@ -97,7 +97,7 @@ const EditItemButton = ({
         form.setValue("email", email);
         form.setValue("password", password);
         form.setValue("favorited", favorited);
-    }, [id]);
+    }, [id, siteName, siteLink, email, password, favorited]);
 
     return (
         <Dialog>
@@ -115,7 +115,7 @@ const EditItemButton = ({
                 <DialogHeader>
                     <DialogTitle>Edit Item</DialogTitle>
                     <DialogDescription>
-                        Apply the changes and click save when you're done.
+                        Apply the changes and click save when you&apos;re done.
                     </DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
