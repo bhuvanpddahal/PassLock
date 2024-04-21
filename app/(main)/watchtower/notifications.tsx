@@ -3,20 +3,24 @@ import { Dispatch, SetStateAction } from "react";
 import ReusedPasswords from "./reused-passwords";
 import UnsecuredWebsites from "./unsecured-websites";
 import VulnerablePasswords from "./vulnerable-passwords";
-import type { Active, Data } from "./page";
+import type { Active, Data, NotificationStatus } from "./page";
 
 interface NotificationsProps {
     active: Active;
     setActive: Dispatch<SetStateAction<Active>>;
     data: Data;
     setData: Dispatch<SetStateAction<Data>>;
+    notificationStatus: NotificationStatus;
+    setNotificationStatus: Dispatch<SetStateAction<NotificationStatus>>;
 }
 
 const Notifications = ({
     active,
     setActive,
     data,
-    setData
+    setData,
+    notificationStatus,
+    setNotificationStatus
 }: NotificationsProps) => {
     const notificationsCount = data.reusedPasswords.length
         + data.unsecuredWebsites.length
@@ -36,18 +40,24 @@ const Notifications = ({
                     setActive={setActive}
                     notificationsData={data}
                     setData={setData}
+                    notificationStatus={notificationStatus}
+                    setNotificationStatus={setNotificationStatus}
                 />
                 <ReusedPasswords
                     active={active}
                     setActive={setActive}
                     notificationsData={data}
                     setData={setData}
+                    notificationStatus={notificationStatus}
+                    setNotificationStatus={setNotificationStatus}
                 />
                 <UnsecuredWebsites
                     active={active}
                     setActive={setActive}
                     notificationsData={data}
                     setData={setData}
+                    notificationStatus={notificationStatus}
+                    setNotificationStatus={setNotificationStatus}
                 />
             </div>
         </div>

@@ -8,11 +8,11 @@ import ItemLoader from "../item-loader";
 import NotificationsError from "./notifications-error";
 import NotificationsLoader from "./notifications-loader";
 import { cn } from "@/lib/utils";
-import type { Active, Data } from "./page";
 import { NotificationsData } from "../types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ITEMS_PER_NOTIFICATION } from "../constant";
+import type { Active, Data, NotificationStatus } from "./page";
 import { getUserItemsWithUnsecuredWebsite } from "@/actions/item";
 
 interface fetchItemsWithUnsecuredWebsiteParams {
@@ -24,13 +24,17 @@ interface UnsecuredWebsitesProps {
     setActive: Dispatch<SetStateAction<Active>>;
     notificationsData: Data;
     setData: Dispatch<SetStateAction<Data>>;
+    notificationStatus: NotificationStatus;
+    setNotificationStatus: Dispatch<SetStateAction<NotificationStatus>>;
 }
 
 const UnsecuredWebsites = ({
     active,
     setActive,
     notificationsData,
-    setData
+    setData,
+    notificationStatus,
+    setNotificationStatus
 }: UnsecuredWebsitesProps) => {
     const fetchItemsWithUnsecuredWebsite = async ({
         pageParam
@@ -64,12 +68,73 @@ const UnsecuredWebsites = ({
         }
     });
 
+    const setStatus = (isFetching: boolean, isError: boolean) => {
+        setNotificationStatus((prev) => ({
+            ...prev,
+            unsecuredWebsites: {
+                isFetching,
+                isError
+            }
+        }));
+    };
+
+    const changeActive = (status: "empty" | "error") => {
+        // Code to switch the active item since the current item is either empty,
+        // or there was an error fetching the current item
+        if (status === "empty") {
+            if (notificationsData.vulnerablePasswords.length > 0) {
+                setActive({ notification: "vulnerablePasswords", index: 0 });
+            } else if (notificationsData.reusedPasswords.length > 0) {
+                setActive({ notification: "reusedPasswords", index: 0 });
+            } else if (notificationStatus.vulnerablePasswords.isFetching) {
+                setActive({ notification: "vulnerablePasswords", index: 0 });
+            } else if (notificationStatus.reusedPasswords.isFetching) {
+                setActive({ notification: "reusedPasswords", index: 0 });
+            } else if (notificationStatus.vulnerablePasswords.isError) {
+                setActive({ notification: "vulnerablePasswords", index: 0 });
+            } else {
+                setActive({ notification: "reusedPasswords", index: 0 });
+            }
+        } else {
+            if (notificationsData.vulnerablePasswords.length > 0) {
+                setActive({ notification: "vulnerablePasswords", index: 0 });
+            } else if (notificationsData.reusedPasswords.length > 0) {
+                setActive({ notification: "reusedPasswords", index: 0 });
+            } else if (notificationStatus.vulnerablePasswords.isFetching) {
+                setActive({ notification: "vulnerablePasswords", index: 0 });
+            } else if (notificationStatus.reusedPasswords.isFetching) {
+                setActive({ notification: "reusedPasswords", index: 0 });
+            }
+        }
+    };
+
     const items = data?.pages.flatMap((page) => page.items);
 
     useEffect(() => {
         if (items) {
-            if (notificationsData.unsecuredWebsites.length === items.length) return;
-            setData((prev) => ({ ...prev, unsecuredWebsites: items }));
+            if (items.length > 0) { // If there is atleast one item
+                if (items[0]) { /// If the data is fetched successfully
+                    if (notificationsData.unsecuredWebsites.length === items.length) return;
+                    setData((prev) => ({ ...prev, unsecuredWebsites: items }));
+                    if (notificationStatus.unsecuredWebsites.isFetching) {
+                        setStatus(false, false);
+                    }
+                } else { // If there was an error trying to fetch the data
+                    if (!notificationStatus.unsecuredWebsites.isError) {
+                        setStatus(false, true);
+                    }
+                    if (active.notification === "unsecuredWebsites") {
+                        changeActive("error");
+                    }
+                }
+            } else { // If there is no item with unsecured website
+                if (notificationStatus.unsecuredWebsites.isFetching) {
+                    setStatus(false, false);
+                }
+                if (active.notification === "unsecuredWebsites") {
+                    changeActive("empty");
+                }
+            }
         }
     }, [items, setData]);
 
@@ -79,7 +144,7 @@ const UnsecuredWebsites = ({
             Icon={ShieldOff}
         />
     )
-    if (!items) return (
+    if (!items || (items.length > 0 && !items[0])) return (
         <NotificationsError
             title="Unsecured Websites"
             Icon={ShieldOff}

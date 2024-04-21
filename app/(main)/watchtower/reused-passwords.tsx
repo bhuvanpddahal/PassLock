@@ -8,11 +8,11 @@ import ItemLoader from "../item-loader";
 import NotificationsError from "./notifications-error";
 import NotificationsLoader from "./notifications-loader";
 import { cn } from "@/lib/utils";
-import type { Active, Data } from "./page";
 import { Badge } from "@/components/ui/badge";
 import { ReusedPasswordsData } from "../types";
 import { Button } from "@/components/ui/button";
 import { ITEMS_PER_NOTIFICATION } from "../constant";
+import type { Active, Data, NotificationStatus } from "./page";
 import { getUserItemsWithReusedPassword } from "@/actions/item";
 
 interface fetchItemsWithReusedPasswordParams {
@@ -24,13 +24,17 @@ interface ReusedPasswordsProps {
     setActive: Dispatch<SetStateAction<Active>>;
     notificationsData: Data;
     setData: Dispatch<SetStateAction<Data>>;
+    notificationStatus: NotificationStatus;
+    setNotificationStatus: Dispatch<SetStateAction<NotificationStatus>>;
 }
 
 const ReusedPasswords = ({
     active,
     setActive,
     notificationsData,
-    setData
+    setData,
+    notificationStatus,
+    setNotificationStatus
 }: ReusedPasswordsProps) => {
     const fetchItemsWithReusedPassword = async ({
         pageParam
@@ -64,12 +68,73 @@ const ReusedPasswords = ({
         }
     });
 
+    const setStatus = (isFetching: boolean, isError: boolean) => {
+        setNotificationStatus((prev) => ({
+            ...prev,
+            reusedPasswords: {
+                isFetching,
+                isError
+            }
+        }));
+    };
+
+    const changeActive = (status: "empty" | "error") => {
+        // Code to switch the active item since the current item is either empty,
+        // or there was an error fetching the current item
+        if (status === "empty") {
+            if (notificationsData.vulnerablePasswords.length > 0) {
+                setActive({ notification: "vulnerablePasswords", index: 0 });
+            } else if (notificationsData.unsecuredWebsites.length > 0) {
+                setActive({ notification: "unsecuredWebsites", index: 0 });
+            } else if (notificationStatus.vulnerablePasswords.isFetching) {
+                setActive({ notification: "vulnerablePasswords", index: 0 });
+            } else if (notificationStatus.unsecuredWebsites.isFetching) {
+                setActive({ notification: "unsecuredWebsites", index: 0 });
+            } else if (notificationStatus.vulnerablePasswords.isError) {
+                setActive({ notification: "vulnerablePasswords", index: 0 });
+            } else {
+                setActive({ notification: "unsecuredWebsites", index: 0 });
+            }
+        } else {
+            if (notificationsData.vulnerablePasswords.length > 0) {
+                setActive({ notification: "vulnerablePasswords", index: 0 });
+            } else if (notificationsData.unsecuredWebsites.length > 0) {
+                setActive({ notification: "unsecuredWebsites", index: 0 });
+            } else if (notificationStatus.vulnerablePasswords.isFetching) {
+                setActive({ notification: "vulnerablePasswords", index: 0 });
+            } else if (notificationStatus.unsecuredWebsites.isFetching) {
+                setActive({ notification: "unsecuredWebsites", index: 0 });
+            }
+        }
+    };
+
     const items = data?.pages.flatMap((page) => page.items);
 
     useEffect(() => {
         if (items) {
-            if (notificationsData.reusedPasswords.length === items.length) return;
-            setData((prev) => ({ ...prev, reusedPasswords: items }));
+            if (items.length > 0) { // If there is atleast one item
+                if (items[0]) { /// If the data is fetched successfully
+                    if (notificationsData.reusedPasswords.length === items.length) return;
+                    setData((prev) => ({ ...prev, reusedPasswords: items }));
+                    if (notificationStatus.reusedPasswords.isFetching) {
+                        setStatus(false, false);
+                    }
+                } else { // If there was an error trying to fetch the data
+                    if (!notificationStatus.reusedPasswords.isError) {
+                        setStatus(false, true);
+                    }
+                    if (active.notification === "reusedPasswords") {
+                        changeActive("error");
+                    }
+                }
+            } else { // If there is no item with reused password
+                if (notificationStatus.reusedPasswords.isFetching) {
+                    setStatus(false, false);
+                }
+                if (active.notification === "reusedPasswords") {
+                    changeActive("empty");
+                }
+            }
         }
     }, [items, setData]);
 
@@ -79,7 +144,7 @@ const ReusedPasswords = ({
             Icon={RefreshCw}
         />
     )
-    if (!items) return (
+    if (!items || (items.length > 0 && !items[0])) return (
         <NotificationsError
             title="Reused Passwords"
             Icon={RefreshCw}

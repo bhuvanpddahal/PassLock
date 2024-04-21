@@ -30,7 +30,7 @@ interface ItemsProps {
         hasNextPage: boolean;
     }, unknown>, Error>>;
     isFetchingNextPage: boolean;
-    isSearching?: boolean;
+    tab?: "dashboard" | "favorites" | "search";
 }
 
 const Items = ({
@@ -42,7 +42,7 @@ const Items = ({
     hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
-    isSearching = false
+    tab = "dashboard"
 }: ItemsProps) => {
     const { ref, inView } = useInView();
 
@@ -127,10 +127,9 @@ const Items = ({
                         width={80}
                     />
                     <p className="text-muted-foreground">
-                        {isSearching
-                            ? "Search result is empty."
-                            : "Start by creating a new item."
-                        }
+                        {tab === "dashboard" && "Start by creating a new item."}
+                        {tab === "favorites" && "No favorited item."}
+                        {tab === "search" && "Search result is empty."}
                     </p>
                 </div>
             )}

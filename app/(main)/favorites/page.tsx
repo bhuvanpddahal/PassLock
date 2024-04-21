@@ -5,21 +5,19 @@ import { useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
 import Items from "../items";
-import NewUser from "../new-user";
-import ItemContent from "../item-content";
 import FetchError from "../fetch-error";
+import NoFavorites from "./no-favorites";
+import ItemContent from "../item-content";
 import ItemContentLoader from "../item-content-loader";
 import { ItemsData } from "../types";
 import { ITEMS_PER_PAGE } from "../constant";
 import { getUserFavoritedItems } from "@/actions/item";
-import { useNewItem } from "@/hooks/use-new-item-modal";
 
 interface FetchItemsProps {
     pageParam: number;
 }
 
 const FavoritesPage = () => {
-    const { open } = useNewItem();
     const [activeIndex, setActiveIndex] = useState(0);
 
     const fetchItems = async ({ pageParam }: FetchItemsProps) => {
@@ -65,26 +63,28 @@ const FavoritesPage = () => {
                 hasNextPage={hasNextPage}
                 fetchNextPage={fetchNextPage}
                 isFetchingNextPage={isFetchingNextPage}
+                tab="favorites"
             />
-            {items
-                ? items[activeIndex] ? (
-                    <ItemContent
-                        id={items[activeIndex].id}
-                        siteName={items[activeIndex].siteName}
-                        siteLink={items[activeIndex].siteLink}
-                        email={items[activeIndex].email}
-                        password={items[activeIndex].password}
-                        favorited={items[activeIndex].favorited}
-                        addedAt={items[activeIndex].addedAt}
-                    />
-                ) : (
-                    <NewUser />
-                ) : status === "pending" ? (
-                    <ItemContentLoader />
-                ) : (
-                    <FetchError />
-                )
-            }
+            {items && items.length > 0 && items[0] && (
+                <ItemContent
+                    id={items[activeIndex].id}
+                    siteName={items[activeIndex].siteName}
+                    siteLink={items[activeIndex].siteLink}
+                    email={items[activeIndex].email}
+                    password={items[activeIndex].password}
+                    favorited={items[activeIndex].favorited}
+                    addedAt={items[activeIndex].addedAt}
+                />
+            )}
+            {items && items.length === 0 && (
+                <NoFavorites />
+            )}
+            {!items && status === "pending" && (
+                <ItemContentLoader />
+            )}
+            {(!items && status !== "pending") || (items && items.length > 0 && !items[0]) && (
+                <FetchError />
+            )}
         </div>
     )
 };

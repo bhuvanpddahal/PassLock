@@ -66,7 +66,7 @@ const SearchPage = () => {
                 hasNextPage={hasNextPage}
                 fetchNextPage={fetchNextPage}
                 isFetchingNextPage={isFetchingNextPage}
-                isSearching
+                tab="search"
             />
             {items
                 ? items[activeIndex] ? (

@@ -1,24 +1,24 @@
 import Image from "next/image";
 
-const FetchError = () => {
+const EverythingGood = () => {
     return (
-        <div className="h-full flex-1 p-3 pl-4 flex flex-col items-center justify-center gap-y-2">
+        <div className="h-full p-3 pl-4 flex flex-col items-center justify-center gap-y-2">
             <Image
-                src="/error.png"
+                src="/all-good.png"
                 alt="Error"
                 height={60}
                 width={60}
             />
             <div>
                 <h2 className="text-lg font-bold text-zinc-800 text-center">
-                    An error occurred!
+                    All good!
                 </h2>
                 <p className="text-muted-foreground text-sm max-w-lg text-center">
-                    Oops, something went wrong while trying to get the data. Please refresh the site to try again.
+                    Everything is fine. We'll notify you if anything goes wrong.
                 </p>
             </div>
         </div>
     )
 };
 
-export default FetchError;
+export default EverythingGood;

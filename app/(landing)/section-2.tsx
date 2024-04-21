@@ -1,11 +1,16 @@
-import { BaggageClaim, Globe, Home, Terminal } from "lucide-react";
+import {
+    BaggageClaim,
+    Globe,
+    Home,
+    Terminal
+} from "lucide-react";
 
 const Section2 = () => {
     return (
         <section className="min-h-screen max-w-7xl mx-auto px-8 py-[50px] flex flex-col lg:flex-row items-center gap-8">
             <div className="w-full">
                 <h2 className="max-w-lg mx-auto text-[30px] md:text-[35px] xl:text-[40px] font-extrabold text-center text-zinc-700 leading-[38px] md:leading-[45px] xl:leading-[50px]">
-                    PassLock has somthing for each individual.
+                    PassLock has something for each individual.
                 </h2>
                 <ul className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                     <li className="flex flex-col items-center gap-y-1">
