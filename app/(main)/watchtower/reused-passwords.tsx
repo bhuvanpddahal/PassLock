@@ -2,7 +2,7 @@ import Image from "next/image";
 import { toast } from "sonner";
 import { RefreshCw } from "lucide-react";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { Dispatch, SetStateAction, useCallback, useEffect } from "react";
 
 import ItemLoader from "../item-loader";
 import NotificationsError from "./notifications-error";
@@ -67,50 +67,50 @@ const ReusedPasswords = ({
             }
         }
     });
-
-    const setStatus = (isFetching: boolean, isError: boolean) => {
-        setNotificationStatus((prev) => ({
-            ...prev,
-            reusedPasswords: {
-                isFetching,
-                isError
-            }
-        }));
-    };
-
-    const changeActive = (status: "empty" | "error") => {
-        // Code to switch the active item since the current item is either empty,
-        // or there was an error fetching the current item
-        if (status === "empty") {
-            if (notificationsData.vulnerablePasswords.length > 0) {
-                setActive({ notification: "vulnerablePasswords", index: 0 });
-            } else if (notificationsData.unsecuredWebsites.length > 0) {
-                setActive({ notification: "unsecuredWebsites", index: 0 });
-            } else if (notificationStatus.vulnerablePasswords.isFetching) {
-                setActive({ notification: "vulnerablePasswords", index: 0 });
-            } else if (notificationStatus.unsecuredWebsites.isFetching) {
-                setActive({ notification: "unsecuredWebsites", index: 0 });
-            } else if (notificationStatus.vulnerablePasswords.isError) {
-                setActive({ notification: "vulnerablePasswords", index: 0 });
-            } else if (notificationStatus.unsecuredWebsites.isError) {
-                setActive({ notification: "unsecuredWebsites", index: 0 });
-            }
-        } else {
-            if (notificationsData.vulnerablePasswords.length > 0) {
-                setActive({ notification: "vulnerablePasswords", index: 0 });
-            } else if (notificationsData.unsecuredWebsites.length > 0) {
-                setActive({ notification: "unsecuredWebsites", index: 0 });
-            } else if (notificationStatus.vulnerablePasswords.isFetching) {
-                setActive({ notification: "vulnerablePasswords", index: 0 });
-            } else if (notificationStatus.unsecuredWebsites.isFetching) {
-                setActive({ notification: "unsecuredWebsites", index: 0 });
-            }
-        }
-    };
-
+    
     const items = data?.pages.flatMap((page) => page.items);
-
+    
     useEffect(() => {
+        const setStatus = useCallback((isFetching: boolean, isError: boolean) => {
+            setNotificationStatus((prev) => ({
+                ...prev,
+                reusedPasswords: {
+                    isFetching,
+                    isError
+                }
+            }));
+        }, [setNotificationStatus]);
+    
+        const changeActive = useCallback((status: "empty" | "error") => {
+            // Code to switch the active item since the current item is either empty,
+            // or there was an error fetching the current item
+            if (status === "empty") {
+                if (notificationsData.vulnerablePasswords.length > 0) {
+                    setActive({ notification: "vulnerablePasswords", index: 0 });
+                } else if (notificationsData.unsecuredWebsites.length > 0) {
+                    setActive({ notification: "unsecuredWebsites", index: 0 });
+                } else if (notificationStatus.vulnerablePasswords.isFetching) {
+                    setActive({ notification: "vulnerablePasswords", index: 0 });
+                } else if (notificationStatus.unsecuredWebsites.isFetching) {
+                    setActive({ notification: "unsecuredWebsites", index: 0 });
+                } else if (notificationStatus.vulnerablePasswords.isError) {
+                    setActive({ notification: "vulnerablePasswords", index: 0 });
+                } else if (notificationStatus.unsecuredWebsites.isError) {
+                    setActive({ notification: "unsecuredWebsites", index: 0 });
+                }
+            } else {
+                if (notificationsData.vulnerablePasswords.length > 0) {
+                    setActive({ notification: "vulnerablePasswords", index: 0 });
+                } else if (notificationsData.unsecuredWebsites.length > 0) {
+                    setActive({ notification: "unsecuredWebsites", index: 0 });
+                } else if (notificationStatus.vulnerablePasswords.isFetching) {
+                    setActive({ notification: "vulnerablePasswords", index: 0 });
+                } else if (notificationStatus.unsecuredWebsites.isFetching) {
+                    setActive({ notification: "unsecuredWebsites", index: 0 });
+                }
+            }
+        }, [setActive, notificationStatus, notificationsData]);
+
         if (items) {
             if (items.length > 0) { // If there is atleast one item
                 if (items[0]) { /// If the data is fetched successfully
@@ -140,11 +140,9 @@ const ReusedPasswords = ({
         items,
         setData,
         active.notification,
-        changeActive,
         notificationStatus.reusedPasswords.isError,
         notificationStatus.reusedPasswords.isFetching,
-        notificationsData.reusedPasswords.length,
-        setStatus
+        notificationsData.reusedPasswords.length
     ]);
 
     if (status === "pending") return (

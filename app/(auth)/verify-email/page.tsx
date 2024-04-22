@@ -20,6 +20,18 @@ const VerifyEmailPage = () => {
     const searchParams = useSearchParams();
     const userId = searchParams.get("userId");
 
+    const {
+        data,
+        status
+    } = useQuery({
+        queryKey: ["verify-email", { userId }],
+        queryFn: async () => {
+            const payload = { userId: userId || "" };
+            const data = await getUserEmail(payload);
+            return data as Data;
+        }
+    });
+
     if (!userId) return (
         <div className="flex flex-col items-center gap-y-2">
             <Image
@@ -33,19 +45,6 @@ const VerifyEmailPage = () => {
             </h2>
         </div>
     )
-
-    const {
-        data,
-        status
-    } = useQuery({
-        queryKey: ["verify-email", { userId }],
-        queryFn: async () => {
-            const payload = { userId };
-            const data = await getUserEmail(payload);
-            return data as Data;
-        }
-    });
-
     if (status === "pending") return (
         <Loader2
             className="h-6 w-6 text-primary animate-spin"
@@ -93,7 +92,7 @@ const VerifyEmailPage = () => {
             />
 
             <p className="text-zinc-500 text-center text-[13px] mb-3">
-                Don't worry, it&apos;s only one time. Once your email is verified, you don&apos;t need to do this anymore :)
+                Don&apos;t worry, it&apos;s only one time. Once your email is verified, you don&apos;t need to do this anymore :)
             </p>
         </div>
     )

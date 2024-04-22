@@ -44,7 +44,7 @@ const OTPInputForm = ({ userId }: OTPInputFormProps) => {
                 setError("Something went wrong");
             });
         });
-    }, [userId, value]);
+    }, [userId, value, router]);
 
     const handleResendEmail = useCallback(() => {
         setError("");
