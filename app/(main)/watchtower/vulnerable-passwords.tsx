@@ -92,7 +92,7 @@ const VulnerablePasswords = ({
                 setActive({ notification: "unsecuredWebsites", index: 0 });
             } else if (notificationStatus.reusedPasswords.isError) {
                 setActive({ notification: "reusedPasswords", index: 0 });
-            } else {
+            } else if (notificationStatus.unsecuredWebsites.isError) {
                 setActive({ notification: "unsecuredWebsites", index: 0 });
             }
         } else {

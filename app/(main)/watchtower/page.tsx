@@ -55,8 +55,6 @@ const WatchtowerPage = () => {
     });
     const originalPasswordOf = data.reusedPasswords[active.index]?.originalPasswordOf;
 
-    console.log("notificationStatus: ", notificationStatus);
-
     return (
         <div className="flex-1 flex">
             <Notifications
