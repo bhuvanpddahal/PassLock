@@ -5,10 +5,10 @@ import { useState } from "react";
 import { Account } from "@prisma/client";
 import { CircleAlert, Star } from "lucide-react";
 
+import AllGood from "./all-good";
 import FetchError from "../fetch-error";
 import ItemContent from "../item-content";
 import Notifications from "./notifications";
-import EverythingGood from "./everything-good";
 import ItemContentLoader from "../item-content-loader";
 import { Item } from "@/lib/queries/item";
 
@@ -138,7 +138,7 @@ const WatchtowerPage = () => {
                         />
                     </>
                 ) : (
-                    <EverythingGood />
+                    <AllGood />
                 )}
             </div>
         </div>

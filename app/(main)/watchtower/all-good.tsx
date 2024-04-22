@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-const EverythingGood = () => {
+const AllGood = () => {
     return (
         <div className="h-full p-3 pl-4 flex flex-col items-center justify-center gap-y-2">
             <Image
@@ -14,11 +14,11 @@ const EverythingGood = () => {
                     All good!
                 </h2>
                 <p className="text-muted-foreground text-sm max-w-lg text-center">
-                    Everything is fine. We'll notify you if anything goes wrong.
+                    Everything is fine. We&apos;ll notify you if anything goes wrong.
                 </p>
             </div>
         </div>
     )
 };
 
-export default EverythingGood;
+export default AllGood;

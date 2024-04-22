@@ -136,7 +136,16 @@ const UnsecuredWebsites = ({
                 }
             }
         }
-    }, [items, setData]);
+    }, [
+        items,
+        setData,
+        active.notification,
+        changeActive,
+        notificationStatus.unsecuredWebsites.isError,
+        notificationStatus.unsecuredWebsites.isFetching,
+        notificationsData.unsecuredWebsites.length,
+        setStatus
+    ]);
 
     if (status === "pending") return (
         <NotificationsLoader

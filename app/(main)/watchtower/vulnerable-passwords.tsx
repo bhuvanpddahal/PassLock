@@ -136,7 +136,16 @@ const VulnerablePasswords = ({
                 }
             }
         }
-    }, [items, setData]);
+    }, [
+        items,
+        setData,
+        active.notification,
+        changeActive,
+        notificationStatus.vulnerablePasswords.isError,
+        notificationStatus.vulnerablePasswords.isFetching,
+        notificationsData.vulnerablePasswords.length,
+        setStatus
+    ]);
 
     if (status === "pending") return (
         <NotificationsLoader

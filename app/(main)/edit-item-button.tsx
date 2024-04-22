@@ -97,7 +97,7 @@ const EditItemButton = ({
         form.setValue("email", email);
         form.setValue("password", password);
         form.setValue("favorited", favorited);
-    }, [id]);
+    }, [id, siteName, siteLink, email, password, favorited]);
 
     return (
         <Dialog>

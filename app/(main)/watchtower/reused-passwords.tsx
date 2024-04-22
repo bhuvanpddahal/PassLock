@@ -136,7 +136,16 @@ const ReusedPasswords = ({
                 }
             }
         }
-    }, [items, setData]);
+    }, [
+        items,
+        setData,
+        active.notification,
+        changeActive,
+        notificationStatus.reusedPasswords.isError,
+        notificationStatus.reusedPasswords.isFetching,
+        notificationsData.reusedPasswords.length,
+        setStatus
+    ]);
 
     if (status === "pending") return (
         <NotificationsLoader
