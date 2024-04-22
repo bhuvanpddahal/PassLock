@@ -71,7 +71,7 @@ const ReusedPasswords = ({
     const items = data?.pages.flatMap((page) => page.items);
     
     useEffect(() => {
-        const setStatus = useCallback((isFetching: boolean, isError: boolean) => {
+        const setStatus = (isFetching: boolean, isError: boolean) => {
             setNotificationStatus((prev) => ({
                 ...prev,
                 reusedPasswords: {
@@ -79,9 +79,9 @@ const ReusedPasswords = ({
                     isError
                 }
             }));
-        }, [setNotificationStatus]);
+        };
     
-        const changeActive = useCallback((status: "empty" | "error") => {
+        const changeActive = (status: "empty" | "error") => {
             // Code to switch the active item since the current item is either empty,
             // or there was an error fetching the current item
             if (status === "empty") {
@@ -109,7 +109,7 @@ const ReusedPasswords = ({
                     setActive({ notification: "unsecuredWebsites", index: 0 });
                 }
             }
-        }, [setActive, notificationStatus, notificationsData]);
+        };
 
         if (items) {
             if (items.length > 0) { // If there is atleast one item
