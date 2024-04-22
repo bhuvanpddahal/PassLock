@@ -21,5 +21,21 @@ export const SigninValidator = z.object({
     })
 });
 
+export const VerifyEmailValidator = z.object({
+    userId: z.string(),
+    token: z.string()
+});
+
+export const ResendTokenValidator = z.object({
+    userId: z.string()
+});
+
+export const GetUserEmailValidator = z.object({
+    userId: z.string()
+});
+
 export type SignupPayload = z.infer<typeof SignupValidator>;
 export type SigninPayload = z.infer<typeof SigninValidator>;
+export type VerifyEmailPayload = z.infer<typeof VerifyEmailValidator>;
+export type ResendTokenPayload = z.infer<typeof ResendTokenValidator>;
+export type GetUserEmailPayload = z.infer<typeof GetUserEmailValidator>;

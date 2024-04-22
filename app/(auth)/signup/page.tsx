@@ -50,7 +50,7 @@ const SignupPage = () => {
                 }
                 if (data?.success) {
                     setSuccess(data.success);
-                    router.push("/dashboard");
+                    router.push(`/verify-email?userId=${data.userId}`);
                 }
             }).catch(() => {
                 setError("Something went wrong");
@@ -59,91 +59,89 @@ const SignupPage = () => {
     };
 
     return (
-        <div className="flex-1 px-2 py-7 flex items-center justify-center">
-            <div className="flex flex-col items-center gap-y-3 shadow-md rounded-lg p-6 bg-white max-w-xl w-full">
-                <h2 className="text-2xl font-bold text-zinc-800">Create your account</h2>
-                <Form {...form}>
-                    <form
-                        onSubmit={form.handleSubmit(onSubmit)}
-                        className="w-full"
-                    >
-                        <div className='flex flex-col gap-y-6'>
-                            <FormField
-                                control={form.control}
-                                name="name"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>
-                                            <h3>Name</h3>
-                                        </FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                {...field}
-                                                type="text"
-                                                disabled={isLoading}
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="email"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>
-                                            <h3>Email</h3>
-                                        </FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                {...field}
-                                                type="email"
-                                                disabled={isLoading}
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="masterPassword"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>
-                                            <h3>Master password</h3>
-                                        </FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                {...field}
-                                                type="password"
-                                                disabled={isLoading}
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+        <div className="flex flex-col items-center gap-y-3 shadow-md rounded-lg p-6 bg-white max-w-xl w-full">
+            <h2 className="text-2xl font-bold text-zinc-800">Create your account</h2>
+            <Form {...form}>
+                <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="w-full"
+                >
+                    <div className='flex flex-col gap-y-6'>
+                        <FormField
+                            control={form.control}
+                            name="name"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>
+                                        <h3>Name</h3>
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            {...field}
+                                            type="text"
+                                            disabled={isLoading}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="email"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>
+                                        <h3>Email</h3>
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            {...field}
+                                            type="email"
+                                            disabled={isLoading}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="masterPassword"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>
+                                        <h3>Master password</h3>
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            {...field}
+                                            type="password"
+                                            disabled={isLoading}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
 
-                            <FormError message={error} />
-                            <FormSuccess message={success} />
+                        <FormError message={error} />
+                        <FormSuccess message={success} />
 
-                            <Button
-                                type="submit"
-                                disabled={isLoading}
-                                isLoading={isLoading}
-                            >
-                                {isLoading ? "Signing up" : "Sign up"}
-                            </Button>
-                        </div>
-                    </form>
-                </Form>
-                <p className="text-sm text-zinc-600">
-                    If you already have an account, try to
-                    <Link href="/signin" className="text-primary ml-1 hover:underline">Sign in</Link>.
-                </p>
-            </div>
+                        <Button
+                            type="submit"
+                            disabled={isLoading}
+                            isLoading={isLoading}
+                        >
+                            {isLoading ? "Signing up" : "Sign up"}
+                        </Button>
+                    </div>
+                </form>
+            </Form>
+            <p className="text-sm text-zinc-600">
+                If you already have an account, try to
+                <Link href="/signin" className="text-primary ml-1 hover:underline">Sign in</Link>.
+            </p>
         </div>
     )
 };

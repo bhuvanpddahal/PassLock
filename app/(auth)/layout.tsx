@@ -15,7 +15,9 @@ const AuthLayout = ({
                     <Logo />
                 </div>
             </nav>
-            {children}
+            <div className="flex-1 px-2 py-7 flex items-center justify-center">
+                {children}
+            </div>
             <Footer />
         </div>
     )

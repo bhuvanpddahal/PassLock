@@ -51,7 +51,6 @@ const DashboardPage = () => {
     });
 
     const items = data?.pages.flatMap((page) => page.items);
-    console.log("items: ", items);
 
     return (
         <div className="flex-1 flex">
