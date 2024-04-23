@@ -4,6 +4,10 @@ import Section3 from "./section-3";
 import HeroSection from "./hero-section";
 import Footer from "@/components/footer";
 
+export const metadata = {
+    title: "PassLock - Your goto password manager"
+};
+
 const LandingPage = () => {
     return (
         <div>
