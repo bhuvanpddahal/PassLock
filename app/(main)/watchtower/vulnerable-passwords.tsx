@@ -149,7 +149,7 @@ const VulnerablePasswords = ({
         <NotificationsLoader
             title="Vulnerable Passwords"
             Icon={TriangleAlert}
-            hasActiveItem
+            hasActiveItem={active.notification === "vulnerablePasswords"}
         />
     )
     if (!items || (items.length > 0 && !items[0])) return (

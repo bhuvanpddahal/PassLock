@@ -2,7 +2,7 @@ import Image from "next/image";
 import { toast } from "sonner";
 import { ShieldOff } from "lucide-react";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { Dispatch, SetStateAction, useCallback, useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 
 import ItemLoader from "../item-loader";
 import NotificationsError from "./notifications-error";
@@ -149,6 +149,7 @@ const UnsecuredWebsites = ({
         <NotificationsLoader
             title="Unsecured Websites"
             Icon={ShieldOff}
+            hasActiveItem={active.notification === "unsecuredWebsites"}
         />
     )
     if (!items || (items.length > 0 && !items[0])) return (

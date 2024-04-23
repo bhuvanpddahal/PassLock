@@ -2,7 +2,7 @@ import Image from "next/image";
 import { toast } from "sonner";
 import { RefreshCw } from "lucide-react";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { Dispatch, SetStateAction, useCallback, useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 
 import ItemLoader from "../item-loader";
 import NotificationsError from "./notifications-error";
@@ -149,6 +149,7 @@ const ReusedPasswords = ({
         <NotificationsLoader
             title="Reused Passwords"
             Icon={RefreshCw}
+            hasActiveItem={active.notification === "reusedPasswords"}
         />
     )
     if (!items || (items.length > 0 && !items[0])) return (

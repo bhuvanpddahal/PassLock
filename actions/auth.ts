@@ -86,7 +86,7 @@ export const signIn = async (payload: SigninPayload) => {
 
             return { userId: user.id, success: "Verification email sent" };
         }
-    } catch (error: any) {
+    } catch (error) {
         console.error(error);
         return { error: "Something went wrong" };
     }

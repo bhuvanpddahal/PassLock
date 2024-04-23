@@ -140,7 +140,7 @@ const SignupPage = () => {
             </Form>
             <p className="text-sm text-zinc-600">
                 If you already have an account, try to
-                <Link href="/signin" className="text-primary ml-1 hover:underline">Sign in</Link>.
+                <Link href="/signin" className="text-primary ml-1 hover:underline">sign in</Link>.
             </p>
         </div>
     )
