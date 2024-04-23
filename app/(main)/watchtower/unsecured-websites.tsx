@@ -12,8 +12,8 @@ import { NotificationsData } from "../types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ITEMS_PER_NOTIFICATION } from "../constant";
-import type { Active, Data, NotificationStatus } from "./page";
 import { getUserItemsWithUnsecuredWebsite } from "@/actions/item";
+import type { Active, Data, NotificationStatus } from "./content";
 
 interface fetchItemsWithUnsecuredWebsiteParams {
     pageParam: number;

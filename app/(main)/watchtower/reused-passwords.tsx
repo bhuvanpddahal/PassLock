@@ -12,8 +12,8 @@ import { Badge } from "@/components/ui/badge";
 import { ReusedPasswordsData } from "../types";
 import { Button } from "@/components/ui/button";
 import { ITEMS_PER_NOTIFICATION } from "../constant";
-import type { Active, Data, NotificationStatus } from "./page";
 import { getUserItemsWithReusedPassword } from "@/actions/item";
+import type { Active, Data, NotificationStatus } from "./content";
 
 interface fetchItemsWithReusedPasswordParams {
     pageParam: number;

@@ -12,7 +12,7 @@ import { NotificationsData } from "../types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ITEMS_PER_NOTIFICATION } from "../constant";
-import type { Active, Data, NotificationStatus } from "./page";
+import type { Active, Data, NotificationStatus } from "./content";
 import { getUserItemsWithVulnerablePassword } from "@/actions/item";
 
 interface fetchItemsWithVulnerablePasswordParams {
