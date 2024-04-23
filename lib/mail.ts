@@ -20,8 +20,8 @@ export const sendVerificationEmail = async (email: string, token: string) => {
         // to: [email], // List of receivers
         to: email, // If you have a single receiver
         subject: "Verify your email",
-        text: "This token expires in 10 minutes.",
-        html: `<p>This is your token: <h1>${token}</h1></p>`,
+        text: "This code expires in 10 minutes.",
+        html: `<p>This is your code: <h1>${token}</h1></p>`,
         // Send attachments if you want to
         // attachments: [
         //     {
