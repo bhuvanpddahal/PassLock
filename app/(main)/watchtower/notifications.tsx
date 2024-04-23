@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction } from "react";
 import ReusedPasswords from "./reused-passwords";
 import UnsecuredWebsites from "./unsecured-websites";
 import VulnerablePasswords from "./vulnerable-passwords";
-import type { Active, Data, NotificationStatus } from "./page";
+import type { Active, Data, NotificationStatus } from "./content";
 
 interface NotificationsProps {
     active: Active;
