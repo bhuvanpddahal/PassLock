@@ -6,6 +6,7 @@ import "./globals.css";
 import Providers from "@/components/providers";
 import NewItemModal from "@/components/new-item-modal";
 import { Toaster } from "@/components/ui/sonner";
+import { CSPostHogProvider } from "@/components/analytics/provider";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
     subsets: ["latin"]
@@ -26,15 +27,17 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body className={plusJakartaSans.className}>
-                <Toaster />
-                <CookiesProvider>
-                    <Providers>
-                        <NewItemModal />
-                        {children}
-                    </Providers>
-                </CookiesProvider>
-            </body>
+            <CookiesProvider>
+                <CSPostHogProvider>
+                    <body className={plusJakartaSans.className}>
+                        <Toaster />
+                        <Providers>
+                            <NewItemModal />
+                            {children}
+                        </Providers>
+                    </body>
+                </CSPostHogProvider>
+            </CookiesProvider>
         </html>
     );
 }
