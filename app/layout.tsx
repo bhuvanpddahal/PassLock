@@ -25,8 +25,18 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL!;
+    
     return (
         <html lang="en">
+            <head>
+                <script
+                    defer
+                    data-website-id={process.env.METRIK_WEBSITE_ID}
+                    data-domain={new URL(appUrl).host}
+                    src="https://metrik-one.vercel.app/js/script.js"
+                ></script>
+            </head>
             <CookiesProvider>
                 <CSPostHogProvider>
                     <body className={plusJakartaSans.className}>
