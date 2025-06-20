@@ -38,10 +38,10 @@ const ItemContent = ({
     const [isCopied, setIsCopied] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
-    const handleCopy = () => {
+    const handleCopy = async () => {
         if (isCopied) return;
 
-        window.navigator.clipboard.writeText(password);
+        await window.navigator.clipboard.writeText(password);
         setIsCopied(true);
 
         setTimeout(() => setIsCopied(false), 3000);
@@ -147,7 +147,7 @@ const ItemContent = ({
                             "text-xs text-muted-foreground text-right font-medium",
                             passwordStrength(password).id === 0 && "text-red-500",
                             passwordStrength(password).id === 1 && "text-orange-500",
-                            passwordStrength(password).id === 2 && "text-yellow-700",
+                            passwordStrength(password).id === 2 && "text-blue-500",
                             passwordStrength(password).id === 3 && "text-green-500"
                         )}>
                             {passwordStrength(password).value}

@@ -3,6 +3,7 @@ import { Dispatch, SetStateAction } from "react";
 import ReusedPasswords from "./reused-passwords";
 import UnsecuredWebsites from "./unsecured-websites";
 import VulnerablePasswords from "./vulnerable-passwords";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import type { Active, Data, NotificationStatus } from "./content";
 
 interface NotificationsProps {
@@ -34,7 +35,7 @@ const Notifications = ({
                     : "No notifications"
                 }
             </h3>
-            <div className="h-[calc(100vh-124px)] overflow-y-auto space-y-3">
+            <ScrollArea className="h-[calc(100vh-124px)] space-y-3">
                 <VulnerablePasswords
                     active={active}
                     setActive={setActive}
@@ -59,7 +60,7 @@ const Notifications = ({
                     notificationStatus={notificationStatus}
                     setNotificationStatus={setNotificationStatus}
                 />
-            </div>
+            </ScrollArea>
         </div>
     )
 };

@@ -1,6 +1,7 @@
-import { LucideIcon } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 import ItemLoader from "../item-loader";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface NotificationsLoaderProps {
     title: string;
@@ -24,17 +25,17 @@ const NotificationsLoader = ({
                         {title}
                     </div>
                 </div>
-                <div className="w-[29px] h-[22px] bg-zinc-300 animate-pulse rounded-full" />
+                <Skeleton className="w-[29px] h-[22px] rounded-full" />
             </div>
             <div className="p-3">
                 {hasActiveItem && (
-                    <div className="flex items-center gap-2 bg-zinc-300 p-3 rounded-lg animate-pulse">
+                    <Skeleton className="flex items-center gap-2 bg-zinc-300 p-3 rounded-lg">
                         <div className="bg-white h-[40px] w-[40px] rounded-md" />
                         <div className="space-y-1.5">
                             <div className="h-[11px] w-[80px] bg-white rounded-full" />
                             <div className="h-[10px] w-[140px] bg-white rounded-full" />
                         </div>
-                    </div>
+                    </Skeleton>
                 )}
                 {Array.from({ length }, (_, index) => (
                     <ItemLoader key={index} />

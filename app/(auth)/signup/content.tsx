@@ -60,8 +60,8 @@ const SignupContent = () => {
     };
 
     return (
-        <div className="flex flex-col items-center gap-y-3 shadow-md rounded-lg p-6 bg-white max-w-xl w-full">
-            <h2 className="text-2xl font-bold text-zinc-800">Create your account</h2>
+        <div className="flex flex-col items-center gap-y-3 shadow-md rounded-t-3xl rounded-b-lg p-6 bg-white max-w-lg w-full">
+            <h2 className="text-2xl font-semibold text-zinc-800">Create your account</h2>
             <Form {...form}>
                 <form
                     onSubmit={form.handleSubmit(onSubmit)}

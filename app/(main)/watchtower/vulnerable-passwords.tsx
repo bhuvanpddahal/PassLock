@@ -67,9 +67,9 @@ const VulnerablePasswords = ({
             }
         }
     });
-    
+
     const items = data?.pages.flatMap((page) => page.items);
-    
+
     useEffect(() => {
         const setStatus = (isFetching: boolean, isError: boolean) => {
             setNotificationStatus((prev) => ({
@@ -80,9 +80,9 @@ const VulnerablePasswords = ({
                 }
             }));
         };
-    
+
         const changeActive = (status: "empty" | "error") => {
-            // Code to switch the active item since the current item is either empty,
+            // Code to switch the active item if the current item is either empty,
             // or there was an error fetching the current item
             if (status === "empty") {
                 if (notificationsData.reusedPasswords.length > 0) {

@@ -21,18 +21,22 @@ const VerifyEmailContent = () => {
     const searchParams = useSearchParams();
     const userId = searchParams.get("userId");
 
-    const {
-        data,
-        status
-    } = useQuery({
-        queryKey: ["verify-email", { userId }],
-        queryFn: async () => {
-            const payload = { userId: userId || "" };
-            const data = await getUserEmail(payload);
-            return data as Data;
-        }
-    });
+    // const {
+    //     data,
+    //     status
+    // } = useQuery({
+    //     queryKey: ["verify-email", { userId }],
+    //     queryFn: async () => {
+    //         const payload = { userId: userId || "" };
+    //         const data = await getUserEmail(payload);
+    //         return data as Data;
+    //     }
+    // });
 
+    const data = {
+        email: "eamil",
+        error: false
+    };
     if (!userId) return (
         <div className="flex flex-col items-center gap-y-2">
             <Image
@@ -71,7 +75,7 @@ const VerifyEmailContent = () => {
     )
 
     return (
-        <div className="max-w-xl w-full flex flex-col items-center shadow-md p-5 rounded-lg bg-white">
+        <div className="max-w-lg w-full flex flex-col items-center rounded-t-3xl rounded-b-lg shadow-md p-5 rounded-lg bg-white">
             <div className="flex items-center gap-3 mb-1">
                 <Image
                     src="/logo.png"

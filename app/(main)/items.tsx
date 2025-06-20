@@ -17,6 +17,7 @@ import ItemLoader from "./item-loader";
 import ItemsLoader from "./items-loader";
 import { cn } from "@/lib/utils";
 import { ItemsData } from "./types";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface ItemsProps {
     items: Account[] | undefined;
@@ -65,58 +66,60 @@ const Items = ({
             </h3>
             {items && items.length > 0 ? (
                 <>
-                    <ul className="h-[calc(100vh-124px)] overflow-y-auto px-3">
-                        {items.map((item, index) => {
-                            return item ? (
-                                <li
-                                    key={item.id}
-                                    ref={index === items.length - 1 ? ref : undefined}
-                                    className={cn(
-                                        "flex items-center gap-2 p-3 rounded-lg transition-colors cursor-pointer hover:bg-black/5",
-                                        index === activeIndex && "bg-primary hover:bg-primary/90"
-                                    )}
-                                    onClick={() => setActiveIndex(index)}
-                                >
-                                    <div className="relative">
-                                        <Image
-                                            src="/padlock.png"
-                                            alt="Account"
-                                            height={40}
-                                            width={40}
-                                            className="rounded-md"
-                                        />
-                                        {item.favorited && (
-                                            <div className="absolute top-full left-full p-0.5 -translate-x-1/2 -translate-y-1/2 bg-yellow-400 rounded-full">
-                                                <Star
-                                                    className="h-3 w-3"
-                                                    style={{ fill: "whitesmoke", color: "#aaa" }}
-                                                />
-                                            </div>
+                    <ScrollArea className="h-[calc(100vh-124px)] px-3">
+                        <ul>
+                            {items.map((item, index) => {
+                                return item ? (
+                                    <li
+                                        key={item.id}
+                                        ref={index === items.length - 1 ? ref : undefined}
+                                        className={cn(
+                                            "flex items-center gap-2 p-3 rounded-lg transition-colors cursor-pointer hover:bg-black/5",
+                                            index === activeIndex && "bg-primary hover:bg-primary/90"
                                         )}
-                                    </div>
-                                    <div>
-                                        <span className={cn(
-                                            "font-medium text-left text-zinc-900 block -mb-0.5",
-                                            index === activeIndex && "text-zinc-100"
-                                        )}>
-                                            {item.siteName}
-                                        </span>
-                                        <span className={cn(
-                                            "text-muted-foreground text-xs",
-                                            index === activeIndex && "text-zinc-100"
-                                        )}>
-                                            {item.email}
-                                        </span>
-                                    </div>
-                                </li>
-                            ) : null;
-                        })}
-                        {isFetchingNextPage && (
-                            Array.from({ length: 3 }, (_, index) => (
-                                <ItemLoader key={index} />
-                            ))
-                        )}
-                    </ul>
+                                        onClick={() => setActiveIndex(index)}
+                                    >
+                                        <div className="relative">
+                                            <Image
+                                                src="/padlock.png"
+                                                alt="Account"
+                                                height={40}
+                                                width={40}
+                                                className="rounded-md"
+                                            />
+                                            {item.favorited && (
+                                                <div className="absolute top-full left-full p-0.5 -translate-x-1/2 -translate-y-1/2 bg-yellow-400 rounded-full">
+                                                    <Star
+                                                        className="h-3 w-3"
+                                                        style={{ fill: "whitesmoke", color: "#aaa" }}
+                                                    />
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div>
+                                            <span className={cn(
+                                                "font-medium text-left text-zinc-900 block -mb-0.5",
+                                                index === activeIndex && "text-zinc-100"
+                                            )}>
+                                                {item.siteName}
+                                            </span>
+                                            <span className={cn(
+                                                "text-muted-foreground text-xs",
+                                                index === activeIndex && "text-zinc-100"
+                                            )}>
+                                                {item.email}
+                                            </span>
+                                        </div>
+                                    </li>
+                                ) : null;
+                            })}
+                            {isFetchingNextPage && (
+                                Array.from({ length: 3 }, (_, index) => (
+                                    <ItemLoader key={index} />
+                                ))
+                            )}
+                        </ul>
+                    </ScrollArea>
                 </>
             ) : (
                 <div className="flex-1 flex flex-col items-center justify-center gap-y-2">
