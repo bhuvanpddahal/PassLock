@@ -25,6 +25,7 @@ import {
 } from "@/lib/validators/item";
 import {
     Dialog,
+    DialogClose,
     DialogContent,
     DialogDescription,
     DialogFooter,
@@ -35,8 +36,7 @@ import {
 import { editItem } from "@/actions/item";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { DialogClose } from "@radix-ui/react-dialog";
+import { Switch } from "@/components/ui/switch";
 
 interface EditItemButtonProps {
     id: string;
@@ -209,10 +209,9 @@ const EditItemButton = ({
                                             <h3>Favorite</h3>
                                         </FormLabel>
                                         <FormControl>
-                                            <Checkbox
+                                            <Switch
                                                 checked={field.value}
                                                 onCheckedChange={field.onChange}
-                                                className="border-yellow-400 focus:ring-yellow-400 data-[state=checked]:bg-yellow-400 data-[state=checked]:text-[#aaa]"
                                             />
                                         </FormControl>
                                         <FormMessage />

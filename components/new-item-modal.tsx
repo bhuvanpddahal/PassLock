@@ -28,7 +28,7 @@ import {
 } from "@/lib/validators/item";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import { Checkbox } from "./ui/checkbox";
+import { Switch } from "./ui/switch";
 import { createItem } from "@/actions/item";
 import { useNewItem } from "@/hooks/use-new-item-modal";
 
@@ -168,10 +168,9 @@ const NewItemModal = () => {
                                             <h3>Favorite</h3>
                                         </FormLabel>
                                         <FormControl>
-                                            <Checkbox
+                                            <Switch
                                                 checked={field.value}
                                                 onCheckedChange={field.onChange}
-                                                className="border-yellow-400 focus:ring-yellow-400 data-[state=checked]:bg-yellow-400 data-[state=checked]:text-[#aaa]"
                                             />
                                         </FormControl>
                                         <FormMessage />

@@ -150,6 +150,7 @@ export const getItemsWithUnsecuredWebsite = async (
 };
 
 export const getSearchItems = async (
+    userId: string,
     query: string,
     page: number,
     limit: number
@@ -166,6 +167,7 @@ export const getSearchItems = async (
 
         const items = await db.account.findMany({
             where: {
+                userId,
                 OR: [{
                     siteName: { contains: regexQuery, mode: "insensitive" }
                 }, {
@@ -186,6 +188,7 @@ export const getSearchItems = async (
 
         const totalItems = await db.account.count({
             where: {
+                userId,
                 OR: [{
                     siteName: { contains: regexQuery, mode: "insensitive" }
                 }, {

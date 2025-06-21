@@ -1,5 +1,4 @@
 import moment from "moment";
-import Image from "next/image";
 import {
     Check,
     Clock,
@@ -8,8 +7,10 @@ import {
     EyeOff,
     Star
 } from "lucide-react";
-import { useState } from "react";
-import { passwordStrength } from "check-password-strength";
+import {
+    passwordStrength as checkPasswordStrength
+} from "check-password-strength";
+import { Dispatch, SetStateAction, useState } from "react";
 
 import ItemImage from "./item-image";
 import EditItemButton from "./edit-item-button";
@@ -36,16 +37,25 @@ const ItemContent = ({
     favorited,
     addedAt
 }: ItemContentProps) => {
-    const [isCopied, setIsCopied] = useState(false);
+    const passwordStrength = checkPasswordStrength(password);
     const [showPassword, setShowPassword] = useState(false);
+    const [isEmailCopied, setIsEmailCopied] = useState(false);
+    const [isPasswordCopied, setIsPasswordCopied] = useState(false);
+    const [isSiteLinkCopied, setIsSiteLinkCopied] = useState(false);
 
-    const handleCopy = async () => {
-        if (isCopied) return;
+    const handleCopy = (
+        isCopied: boolean,
+        setIsCopied: Dispatch<SetStateAction<boolean>>,
+        valueToBeCopied: string
+    ) => {
+        return async () => {
+            if (isCopied) return;
 
-        await window.navigator.clipboard.writeText(password);
-        setIsCopied(true);
+            await window.navigator.clipboard.writeText(valueToBeCopied);
+            setIsCopied(true);
 
-        setTimeout(() => setIsCopied(false), 3000);
+            setTimeout(() => setIsCopied(false), 3000);
+        };
     };
 
     const toggleShowPassword = () => {
@@ -102,13 +112,39 @@ const ItemContent = ({
                 </h2>
             </div>
             <div className="border border-zinc-200 rounded-lg">
-                <div className="py-3 px-4 border-b border-zinc-200">
-                    <h3 className="text-[13px] text-primary -mb-0.5">Site Link</h3>
-                    <p className="text-sm text-zinc-800 font-medium">{siteLink}</p>
+                <div className="group py-3 px-4 flex justify-between border-b border-zinc-200">
+                    <div>
+                        <h3 className="text-[13px] text-primary -mb-0.5">Site Link</h3>
+                        <p className="text-sm text-zinc-800 font-medium">{siteLink}</p>
+                    </div>
+                    <Button
+                        variant="outline"
+                        className="h-5 w-5 p-0 opacity-0 transition-opacity delay-1000 group-hover:opacity-100 group-hover:transition-none group-hover:delay-0"
+                        onClick={handleCopy(isSiteLinkCopied, setIsSiteLinkCopied, siteLink)}
+                    >
+                        {isSiteLinkCopied ? (
+                            <Check className="h-3 w-3 text-green-600" />
+                        ) : (
+                            <Copy className="h-3 w-3 text-zinc-600" />
+                        )}
+                    </Button>
                 </div>
-                <div className="py-3 px-4 border-b border-zinc-200">
-                    <h3 className="text-[13px] text-primary -mb-0.5">Email</h3>
-                    <p className="text-sm text-zinc-800 font-medium">{email}</p>
+                <div className="group py-3 px-4 flex justify-between border-b border-zinc-200">
+                    <div>
+                        <h3 className="text-[13px] text-primary -mb-0.5">Email</h3>
+                        <p className="text-sm text-zinc-800 font-medium">{email}</p>
+                    </div>
+                    <Button
+                        variant="outline"
+                        className="h-5 w-5 p-0 opacity-0 transition-opacity delay-1000 group-hover:opacity-100 group-hover:transition-none group-hover:delay-0"
+                        onClick={handleCopy(isEmailCopied, setIsEmailCopied, email)}
+                    >
+                        {isEmailCopied ? (
+                            <Check className="h-3 w-3 text-green-600" />
+                        ) : (
+                            <Copy className="h-3 w-3 text-zinc-600" />
+                        )}
+                    </Button>
                 </div>
                 <div className="py-3 px-4 flex justify-between">
                     <div>
@@ -125,17 +161,6 @@ const ItemContent = ({
                             <Button
                                 variant="outline"
                                 className="h-5 w-5 p-0"
-                                onClick={handleCopy}
-                            >
-                                {isCopied ? (
-                                    <Check className="h-3 w-3 text-green-600" />
-                                ) : (
-                                    <Copy className="h-3 w-3 text-zinc-600" />
-                                )}
-                            </Button>
-                            <Button
-                                variant="outline"
-                                className="h-5 w-5 p-0"
                                 onClick={toggleShowPassword}
                             >
                                 {showPassword ? (
@@ -144,15 +169,26 @@ const ItemContent = ({
                                     <Eye className="h-3 w-3 text-zinc-600" />
                                 )}
                             </Button>
+                            <Button
+                                variant="outline"
+                                className="h-5 w-5 p-0"
+                                onClick={handleCopy(isPasswordCopied, setIsPasswordCopied, password)}
+                            >
+                                {isPasswordCopied ? (
+                                    <Check className="h-3 w-3 text-green-600" />
+                                ) : (
+                                    <Copy className="h-3 w-3 text-zinc-600" />
+                                )}
+                            </Button>
                         </div>
                         <div className={cn(
                             "text-xs text-muted-foreground text-right font-medium",
-                            passwordStrength(password).id === 0 && "text-red-500",
-                            passwordStrength(password).id === 1 && "text-orange-500",
-                            passwordStrength(password).id === 2 && "text-blue-500",
-                            passwordStrength(password).id === 3 && "text-green-500"
+                            passwordStrength.id === 0 && "text-red-500",
+                            passwordStrength.id === 1 && "text-orange-500",
+                            passwordStrength.id === 2 && "text-blue-500",
+                            passwordStrength.id === 3 && "text-green-500"
                         )}>
-                            {passwordStrength(password).value}
+                            {passwordStrength.value}
                         </div>
                     </div>
                 </div>

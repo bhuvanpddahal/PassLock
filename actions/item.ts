@@ -349,6 +349,7 @@ export const getUserSearchItems = async (payload: GetUserSearchItemsPayload) => 
         if (!dbUser) return { error: "User not found" };
 
         const data = await getSearchItems(
+            userId,
             query,
             page,
             limit
