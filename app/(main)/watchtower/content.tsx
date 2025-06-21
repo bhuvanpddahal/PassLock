@@ -10,6 +10,7 @@ import Notifications from "./notifications";
 import WarningBanner from "./warning-banner";
 import ItemContentLoader from "../item-content-loader";
 import type { Item } from "@/lib/queries/item";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export interface Data {
     vulnerablePasswords: Account[];
@@ -67,7 +68,7 @@ const WatchtowerContent = () => {
             <div className="flex-1">
                 {notificationStatus[active.notification].isFetching ? (
                     <>
-                        <div className="h-[100px] bg-zinc-300 m-3 rounded-md animate-pulse" />
+                        <Skeleton className="h-[100px] m-3" />
                         <ItemContentLoader />
                     </>
                 ) : notificationStatus[active.notification].isError ? (

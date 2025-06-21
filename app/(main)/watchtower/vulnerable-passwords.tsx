@@ -1,9 +1,9 @@
-import Image from "next/image";
 import { toast } from "sonner";
 import { TriangleAlert } from "lucide-react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { Dispatch, SetStateAction, useEffect } from "react";
 
+import ItemImage from "../item-image";
 import ItemLoader from "../item-loader";
 import NotificationsError from "./notifications-error";
 import NotificationsLoader from "./notifications-loader";
@@ -161,7 +161,7 @@ const VulnerablePasswords = ({
 
     return (
         <div>
-            <h4 className="flex items-center justify-between bg-zinc-100 px-3 py-1">
+            <h4 className="sticky top-0 flex items-center justify-between bg-zinc-100 px-3 py-1 z-10">
                 <div className="flex items-center gap-1 text-slate-700">
                     <TriangleAlert className="h-4 w-4" />
                     <div className="text-[13px] font-semibold">
@@ -192,13 +192,7 @@ const VulnerablePasswords = ({
                                 })}
                             >
                                 <div className="relative">
-                                    <Image
-                                        src="/padlock.png"
-                                        alt="Account"
-                                        height={40}
-                                        width={40}
-                                        className="rounded-md"
-                                    />
+                                    <ItemImage siteName={item.siteName} siteLink={item.siteLink} />
                                 </div>
                                 <div>
                                     <span className={cn(

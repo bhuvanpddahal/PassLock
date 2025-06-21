@@ -11,6 +11,7 @@ import {
 import { useState } from "react";
 import { passwordStrength } from "check-password-strength";
 
+import ItemImage from "./item-image";
 import EditItemButton from "./edit-item-button";
 import DeleteItemButton from "./delete-item-button";
 import { cn } from "@/lib/utils";
@@ -79,12 +80,13 @@ const ItemContent = ({
             </div>
             <div className="flex items-center gap-3 mt-4 mb-8">
                 <div className="relative">
-                    <Image
-                        src="/padlock.png"
-                        alt="Account"
-                        height={90}
+                    <ItemImage
+                        key={siteLink}
+                        siteName={siteName}
+                        siteLink={siteLink}
                         width={90}
-                        className="rounded-md"
+                        height={90}
+                        className="shadow-lg"
                     />
                     {favorited && (
                         <div className="absolute top-full left-full p-1 -translate-x-1/2 -translate-y-1/2 bg-yellow-400 rounded-full">

@@ -6,6 +6,7 @@ import { Account } from "@prisma/client";
 
 interface PreviousPassword {
     siteName: string;
+    siteLink: string;
     email: string;
     password: string;
     favorited: boolean;
@@ -14,6 +15,7 @@ interface PreviousPassword {
 export interface Item extends Account {
     originalPasswordOf: {
         siteName: string;
+        siteLink: string;
         email: string;
         favorited: boolean;
     };
@@ -86,6 +88,7 @@ export const getItemsWithReusedPassword = async (
                     password: decryptedPassword,
                     originalPasswordOf: {
                         siteName: previousPasswords[originalPasswordIndex].siteName,
+                        siteLink: previousPasswords[originalPasswordIndex].siteLink,
                         email: previousPasswords[originalPasswordIndex].email,
                         favorited: previousPasswords[originalPasswordIndex].favorited
                     }
@@ -93,6 +96,7 @@ export const getItemsWithReusedPassword = async (
             } else { // If password is original
                 previousPasswords.push({
                     siteName: initialItems[i].siteName,
+                    siteLink: initialItems[i].siteLink,
                     email: initialItems[i].email,
                     password: decryptedPassword,
                     favorited: initialItems[i].favorited

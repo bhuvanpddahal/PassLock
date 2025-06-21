@@ -13,6 +13,7 @@ import { Star } from "lucide-react";
 import { Account } from "@prisma/client";
 import { useInView } from "react-intersection-observer";
 
+import ItemImage from "./item-image";
 import ItemLoader from "./item-loader";
 import ItemsLoader from "./items-loader";
 import { cn } from "@/lib/utils";
@@ -80,13 +81,7 @@ const Items = ({
                                         onClick={() => setActiveIndex(index)}
                                     >
                                         <div className="relative">
-                                            <Image
-                                                src="/padlock.png"
-                                                alt="Account"
-                                                height={40}
-                                                width={40}
-                                                className="rounded-md"
-                                            />
+                                            <ItemImage siteName={item.siteName} siteLink={item.siteLink} />
                                             {item.favorited && (
                                                 <div className="absolute top-full left-full p-0.5 -translate-x-1/2 -translate-y-1/2 bg-yellow-400 rounded-full">
                                                     <Star

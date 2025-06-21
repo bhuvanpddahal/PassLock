@@ -18,7 +18,7 @@ const NotificationsLoader = ({
 
     return (
         <div>
-            <div className="flex items-center justify-between bg-zinc-100 px-3 py-1">
+            <div className="sticky top-0 flex items-center justify-between bg-zinc-100 px-3 py-1 z-10">
                 <div className="flex items-center gap-1 text-slate-700">
                     <Icon className="h-4 w-4" />
                     <div className="text-[13px] font-semibold">

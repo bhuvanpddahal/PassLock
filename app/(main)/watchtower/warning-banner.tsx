@@ -1,6 +1,6 @@
-import Image from "next/image";
 import { CircleAlert, Star } from "lucide-react";
 
+import ItemImage from "../item-image";
 import type { Data } from "./content";
 import type { Item } from "@/lib/queries/item";
 
@@ -28,12 +28,9 @@ const WarningBanner = ({
                     It appears that you&apos;ve used this password for multiple accounts. Reusing passwords across different platforms significantly increases the risk of your accounts being compromised. This password was originally used in the following account:
                     <div className="flex items-center gap-2 px-3 my-5">
                         <div className="relative">
-                            <Image
-                                src="/padlock.png"
-                                alt="Account"
-                                height={40}
-                                width={40}
-                                className="rounded-md"
+                            <ItemImage
+                                siteName={originalPasswordOf.siteName}
+                                siteLink={originalPasswordOf.siteLink}
                             />
                             {originalPasswordOf.favorited && (
                                 <div className="absolute top-full left-full p-0.5 -translate-x-1/2 -translate-y-1/2 bg-yellow-400 rounded-full">
