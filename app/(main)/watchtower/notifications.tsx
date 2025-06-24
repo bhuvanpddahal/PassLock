@@ -28,7 +28,7 @@ const Notifications = ({
         + data.vulnerablePasswords.length;
 
     return (
-        <div className="sticky top-[68px] border-r border-zinc-300 w-[280px] flex flex-col text-sm">
+        <div className="sticky top-[calc(4rem+1px)] border-r border-zinc-300 h-[calc(100vh-4rem-1px)] w-[280px] flex flex-col text-sm">
             <h3 className="p-3 pl-6">
                 {notificationsCount > 0
                     ? notificationsCount === 1 ? "1 notification" : `${notificationsCount} notifications`

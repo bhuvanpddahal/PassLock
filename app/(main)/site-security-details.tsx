@@ -37,7 +37,7 @@ const SiteSecurityDetails = ({ site, show }: SiteSecurityDetailsProps) => {
                 >
                     <div className="max-w-lg w-full bg-background mx-auto p-5 pt-4 border-b border-zinc-100">
                         <h3 className="text-base font-semibold">
-                            Security issues for {site.hostname}
+                            Security issues for {site.canonicalHostname}
                         </h3>
                         {site.securityIssues.length ? (
                             <ul className="mt-5 mb-6 list-disc list-inside space-y-1.5 text-destructive">
@@ -53,7 +53,7 @@ const SiteSecurityDetails = ({ site, show }: SiteSecurityDetailsProps) => {
                             </p>
                         )}
                         <ViewCertificate
-                            hostname={site.hostname}
+                            hostname={site.canonicalHostname}
                             certificateDetails={site.certificateDetails as SimplifiedCertificateDetails | null}
                         />
                     </div>

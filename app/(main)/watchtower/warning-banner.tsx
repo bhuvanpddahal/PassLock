@@ -30,7 +30,7 @@ const WarningBanner = ({
                         <div className="relative">
                             <ItemImage
                                 siteName={originalPasswordOf.siteName}
-                                siteLink={originalPasswordOf.siteLink}
+                                hostname={originalPasswordOf.site.canonicalHostname}
                             />
                             {originalPasswordOf.favoritedAt && (
                                 <div className="absolute top-full left-full p-0.5 -translate-x-1/2 -translate-y-1/2 bg-yellow-400 rounded-full">

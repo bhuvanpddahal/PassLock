@@ -72,6 +72,7 @@ const FavoritesContent = () => {
                     siteLink={items[activeIndex].siteLink}
                     email={items[activeIndex].email}
                     password={items[activeIndex].password}
+                    passwordStrength={items[activeIndex].passwordStrength}
                     addedAt={items[activeIndex].addedAt}
                     favoritedAt={items[activeIndex].favoritedAt}
                     site={items[activeIndex].site}

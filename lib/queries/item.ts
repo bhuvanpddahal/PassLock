@@ -5,19 +5,23 @@ import { db } from "@/lib/db";
 
 interface PreviousPassword {
     siteName: string;
-    siteLink: string;
     email: string;
     password: string;
     favoritedAt: Date | null;
+    site: {
+        canonicalHostname: string;
+    };
 }
 
 export interface ItemWithReusedPassword extends Account {
     site: Site;
     originalPasswordOf: {
         siteName: string;
-        siteLink: string;
         email: string;
         favoritedAt: Date | null;
+        site: {
+            canonicalHostname: string;
+        };
     };
 }
 
@@ -105,18 +109,22 @@ export const getItemsWithReusedPassword = async (
                     password: decryptedPassword,
                     originalPasswordOf: {
                         siteName: previousPasswords[originalPasswordIndex].siteName,
-                        siteLink: previousPasswords[originalPasswordIndex].siteLink,
                         email: previousPasswords[originalPasswordIndex].email,
-                        favoritedAt: previousPasswords[originalPasswordIndex].favoritedAt
+                        favoritedAt: previousPasswords[originalPasswordIndex].favoritedAt,
+                        site: {
+                            canonicalHostname: previousPasswords[originalPasswordIndex].site.canonicalHostname
+                        }
                     }
                 });
             } else { // If password is original
                 previousPasswords.push({
                     siteName: initialItems[i].siteName,
-                    siteLink: initialItems[i].siteLink,
                     email: initialItems[i].email,
                     password: decryptedPassword,
-                    favoritedAt: initialItems[i].favoritedAt
+                    favoritedAt: initialItems[i].favoritedAt,
+                    site: {
+                        canonicalHostname: initialItems[i].site.canonicalHostname
+                    }
                 });
             }
         }

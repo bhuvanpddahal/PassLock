@@ -78,9 +78,6 @@ const ViewCertificate = ({
                         Detailed information about the SSL/TLS certificate.
                     </SheetDescription>
                 </SheetHeader>
-                {/* Failed to load the site certificate details. Either we
-                were unable to fetch the certificate for this site, or
-                were expecting more information in it. */}
                 {!certificateDetails ? (
                     <p className="mt-14 text-sm text-center text-muted-foreground font-mono">
                         No certificate information available for this site.
