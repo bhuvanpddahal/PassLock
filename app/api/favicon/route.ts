@@ -6,7 +6,7 @@ const SUCCESS_AND_404_MAX_AGE = 60 * 60 * 24 * 7; // 7 days
 
 export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
-    const siteLink = searchParams.get("siteLink");
+    const hostname = searchParams.get("hostname");
 
     const servePadlock = async (cache: boolean = false) => {
         try {
@@ -30,20 +30,12 @@ export async function GET(req: NextRequest) {
         }
     };
 
-    if (!siteLink) {
-        // If siteLink is missing, this is a client-side error, return padlock without caching
+    if (!hostname) {
+        // If hostname is missing, this is a client-side error, return padlock without caching
         return servePadlock(false);
     }
 
-    let faviconUrl: string;
-    try {
-        const url = new URL(siteLink);
-        faviconUrl = `https://icons.duckduckgo.com/ip3/${url.host}.ico`;
-    } catch (error) {
-        console.error("Invalid siteLink URL:", siteLink, error);
-        // Invalid URL format is a runtime error, return padlock without caching
-        return servePadlock(false);
-    }
+    const faviconUrl = `https://icons.duckduckgo.com/ip3/${hostname}.ico`;
 
     try {
         const response = await fetch(faviconUrl);

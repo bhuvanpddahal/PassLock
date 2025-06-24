@@ -4,7 +4,7 @@ export const metadata = {
     title: "Dashboard - PassLock"
 };
 
-const DashboardPage = () => {
+const DashboardPage = async () => {
     return (
         <DashboardContent />
     )

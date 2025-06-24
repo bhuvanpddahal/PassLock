@@ -1,23 +1,23 @@
 import Cryptr from "cryptr";
-import { passwordStrength } from "check-password-strength";
+import { Account, Site } from "@prisma/client";
 
 import { db } from "@/lib/db";
-import { Account } from "@prisma/client";
 
 interface PreviousPassword {
     siteName: string;
     siteLink: string;
     email: string;
     password: string;
-    favorited: boolean;
+    favoritedAt: Date | null;
 }
 
-export interface Item extends Account {
+export interface ItemWithReusedPassword extends Account {
+    site: Site;
     originalPasswordOf: {
         siteName: string;
         siteLink: string;
         email: string;
-        favorited: boolean;
+        favoritedAt: Date | null;
     };
 }
 
@@ -29,32 +29,43 @@ export const getItemsWithVulnerablePassword = async (
     limit: number
 ) => {
     try {
-        const initialItems = await db.account.findMany({
+        const rawItems = await db.account.findMany({
             where: {
-                userId
+                userId,
+                OR: [
+                    { passwordStrength: "TOO_WEAK" },
+                    { passwordStrength: "WEAK" }
+                ]
+            },
+            include: {
+                site: true
             },
             orderBy: {
                 addedAt: "desc"
-            }
+            },
+            take: limit,
+            skip: (page - 1) * limit
         });
 
-        const filteredItems = initialItems.filter((item) => {
-            const decryptedPassword = cryptr.decrypt(item.password);
-            const passwordStrengthId = passwordStrength(decryptedPassword).id;
-            return passwordStrengthId < 2;
-        });
-
-        const polishedItems = filteredItems.map((item) => ({
+        const polishedItems = rawItems.map((item) => ({
             ...item,
             password: cryptr.decrypt(item.password)
         }));
 
-        const items = polishedItems.slice((page - 1) * limit, page * limit);
-        const totalItems = polishedItems.length;
-        const hasNextPage = polishedItems.length > page * limit;
+        const totalItems = await db.account.count({
+            where: {
+                userId,
+                OR: [
+                    { passwordStrength: "TOO_WEAK" },
+                    { passwordStrength: "WEAK" }
+                ]
+            }
+        });
+        const hasNextPage = totalItems > (page * limit);
 
-        return { items, totalItems, hasNextPage };
+        return { items: polishedItems, totalItems, hasNextPage };
     } catch (error) {
+        console.error(error);
         return null;
     }
 };
@@ -68,11 +79,17 @@ export const getItemsWithReusedPassword = async (
         const initialItems = await db.account.findMany({
             where: {
                 userId
+            },
+            include: {
+                site: true
+            },
+            orderBy: {
+                passwordUpdatedAt: "asc"
             }
         });
 
         let previousPasswords: PreviousPassword[] = [];
-        let itemsWithReusedPasswords: Item[] = [];
+        let itemsWithReusedPasswords: ItemWithReusedPassword[] = [];
 
         for (let i = 0; i < initialItems.length; ++i) {
             const encryptedPassword = initialItems[i].password;
@@ -90,7 +107,7 @@ export const getItemsWithReusedPassword = async (
                         siteName: previousPasswords[originalPasswordIndex].siteName,
                         siteLink: previousPasswords[originalPasswordIndex].siteLink,
                         email: previousPasswords[originalPasswordIndex].email,
-                        favorited: previousPasswords[originalPasswordIndex].favorited
+                        favoritedAt: previousPasswords[originalPasswordIndex].favoritedAt
                     }
                 });
             } else { // If password is original
@@ -99,18 +116,19 @@ export const getItemsWithReusedPassword = async (
                     siteLink: initialItems[i].siteLink,
                     email: initialItems[i].email,
                     password: decryptedPassword,
-                    favorited: initialItems[i].favorited
+                    favoritedAt: initialItems[i].favoritedAt
                 });
             }
         }
 
-        const reversedItems = itemsWithReusedPasswords.reverse();
-        const items = reversedItems.slice((page - 1) * limit, page * limit);
-        const totalItems = reversedItems.length;
-        const hasNextPage = reversedItems.length > page * limit;
+        itemsWithReusedPasswords.reverse();
+        const items = itemsWithReusedPasswords.slice((page - 1) * limit, page * limit);
+        const totalItems = itemsWithReusedPasswords.length;
+        const hasNextPage = totalItems > page * limit;
 
         return { items, totalItems, hasNextPage };
     } catch (error) {
+        console.error(error);
         return null;
     }
 };
@@ -123,28 +141,39 @@ export const getItemsWithUnsecuredWebsite = async (
     try {
         const initialItems = await db.account.findMany({
             where: {
-                userId
+                userId,
+                site: {
+                    isSecured: false
+                }
+            },
+            include: {
+                site: true
             },
             orderBy: {
                 addedAt: "desc"
-            }
+            },
+            take: limit,
+            skip: (page - 1) * limit
         });
 
-        const filteredItems = initialItems.filter(
-            (item) => !item.siteLink.includes("https://")
-        );
-
-        const polishedItems = filteredItems.map((item) => ({
+        const polishedItems = initialItems.map((item) => ({
             ...item,
             password: cryptr.decrypt(item.password)
         }));
 
-        const items = polishedItems.slice((page - 1) * limit, page * limit);
-        const totalItems = polishedItems.length;
-        const hasNextPage = polishedItems.length > page * limit;
+        const totalItems = await db.account.count({
+            where: {
+                userId,
+                site: {
+                    isSecured: false
+                }
+            }
+        });
+        const hasNextPage = totalItems > page * limit;
 
-        return { items, totalItems, hasNextPage };
+        return { items: polishedItems, totalItems, hasNextPage };
     } catch (error) {
+        console.error(error);
         return null;
     }
 };
@@ -174,6 +203,9 @@ export const getSearchItems = async (
                     email: { contains: regexQuery, mode: "insensitive" }
                 }]
             },
+            include: {
+                site: true
+            },
             orderBy: {
                 addedAt: "desc"
             },
@@ -200,6 +232,7 @@ export const getSearchItems = async (
 
         return { items: polishedItems, totalItems, hasNextPage };
     } catch (error) {
+        console.error(error);
         return null;
     }
 };

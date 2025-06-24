@@ -24,7 +24,10 @@ import {
     GetUserSearchItemsPayload,
     GetUserSearchItemsValidator
 } from "@/lib/validators/item";
+import { createSite } from "./site";
 import { getUserById } from "@/lib/queries/user";
+import { getCanonicalHostname } from "@/lib/utils";
+import { checkPasswordStrength } from "@/lib/password";
 
 const cryptr = new Cryptr(process.env.CRYPTR_SECRET_KEY!);
 
@@ -49,7 +52,24 @@ export const createItem = async (payload: CreateItemPayload) => {
         const dbUser = await getUserById(userId);
         if (!dbUser) return { error: "User not found" };
 
+        let siteId: string;
+        const siteUrl = new URL(siteLink);
+        const canonicalHostname = getCanonicalHostname(siteUrl.hostname);
+
+        const existingSite = await db.site.findFirst({
+            where: {
+                canonicalHostname
+            }
+        });
+        if (existingSite) {
+            siteId = existingSite.id;
+        } else {
+            const newSite = await createSite(canonicalHostname);
+            siteId = newSite.siteId;
+        }
+
         const encryptedPassword = cryptr.encrypt(password);
+        const passwordStrength = checkPasswordStrength(password).value;
 
         await db.account.create({
             data: {
@@ -57,8 +77,10 @@ export const createItem = async (payload: CreateItemPayload) => {
                 siteLink,
                 email,
                 password: encryptedPassword,
-                favorited,
-                userId
+                passwordStrength,
+                favoritedAt: favorited ? new Date() : null,
+                userId,
+                siteId
             }
         });
 
@@ -95,24 +117,70 @@ export const editItem = async (payload: EditItemPayload) => {
             where: {
                 id,
                 userId
+            },
+            select: {
+                password: true,
+                site: {
+                    select: {
+                        id: true,
+                        canonicalHostname: true
+                    }
+                }
             }
         });
         if (!dbItem) return { error: "Item not found" };
 
-        const encryptedPassword = cryptr.encrypt(password);
+        let siteId = dbItem.site.id;
+        const siteUrl = new URL(siteLink);
+        const canonicalHostname = getCanonicalHostname(siteUrl.hostname);
+        const isSiteUpdated = canonicalHostname !== dbItem.site.canonicalHostname;
+
+        if (isSiteUpdated) {
+            const existingSite = await db.site.findFirst({
+                where: {
+                    canonicalHostname
+                }
+            });
+            if (existingSite) {
+                siteId = existingSite.id;
+            } else {
+                const newSite = await createSite(canonicalHostname);
+                siteId = newSite.siteId;
+            }
+        }
+
+        const isPasswordUpdated = password !== dbItem.password;
+        const encryptedPassword = isPasswordUpdated ? cryptr.encrypt(password) : undefined;
+        const passwordStrength = isPasswordUpdated ? checkPasswordStrength(password).value : undefined;
 
         await db.account.update({
             where: {
                 id
             },
             data: {
+                siteId,
                 siteName,
                 siteLink,
                 email,
                 password: encryptedPassword,
-                favorited
+                passwordStrength,
+                passwordUpdatedAt: isPasswordUpdated ? new Date() : undefined,
+                favoritedAt: favorited ? new Date() : null
             }
         });
+
+        const totalSiteItems = await db.account.count({
+            where: {
+                siteId: dbItem.site.id
+            }
+        });
+        if (totalSiteItems === 0) {
+            await db.site.delete({
+                where: {
+                    id: dbItem.site.id
+                }
+            });
+        }
 
         return { success: "Item updated successfully" };
     } catch (error) {
@@ -140,6 +208,13 @@ export const deleteItem = async (payload: DeleteItemPayload) => {
             where: {
                 id,
                 userId
+            },
+            select: {
+                site: {
+                    select: {
+                        id: true
+                    }
+                }
             }
         });
         if (!dbItem) return { error: "Item not found" };
@@ -149,6 +224,19 @@ export const deleteItem = async (payload: DeleteItemPayload) => {
                 id
             }
         });
+
+        const totalSiteItems = await db.account.count({
+            where: {
+                siteId: dbItem.site.id
+            }
+        });
+        if (totalSiteItems === 0) {
+            await db.site.delete({
+                where: {
+                    id: dbItem.site.id
+                }
+            });
+        }
 
         return { success: "Item deleted successfully" };
     } catch (error) {
@@ -175,6 +263,9 @@ export const getUserItems = async (payload: GetUserItemsPayload) => {
         const rawItems = await db.account.findMany({
             where: {
                 userId
+            },
+            include: {
+                site: true
             },
             orderBy: {
                 addedAt: "desc"
@@ -220,10 +311,15 @@ export const getUserFavoritedItems = async (payload: GetUserItemsPayload) => {
         const rawItems = await db.account.findMany({
             where: {
                 userId,
-                favorited: true
+                NOT: {
+                    favoritedAt: null
+                }
+            },
+            include: {
+                site: true
             },
             orderBy: {
-                addedAt: "desc"
+                favoritedAt: "desc"
             },
             take: limit,
             skip: (page - 1) * limit
@@ -237,7 +333,9 @@ export const getUserFavoritedItems = async (payload: GetUserItemsPayload) => {
         const totalItems = await db.account.count({
             where: {
                 userId,
-                favorited: true
+                NOT: {
+                    favoritedAt: null
+                }
             }
         });
         const hasNextPage = totalItems > (page * limit);

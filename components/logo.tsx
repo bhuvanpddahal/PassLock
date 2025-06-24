@@ -5,6 +5,7 @@ import { Exo_2 } from "next/font/google";
 import { cn } from "@/lib/utils";
 
 interface LogoProps {
+    href?: string;
     className?: string;
     size?: "default" | "small";
 }
@@ -15,11 +16,12 @@ const exo2 = Exo_2({
 });
 
 const Logo = ({
-    className,
+    href = "/",
+    className = "",
     size = "default"
 }: LogoProps) => {
     return (
-        <Link href="/" className="w-fit flex items-center gap-x-1">
+        <Link href={href} className="w-fit flex items-center gap-x-1">
             <Image
                 src="/logo.png"
                 alt="Logo"

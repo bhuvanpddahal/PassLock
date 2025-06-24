@@ -2,11 +2,11 @@ import { CircleAlert, Star } from "lucide-react";
 
 import ItemImage from "../item-image";
 import type { Data } from "./content";
-import type { Item } from "@/lib/queries/item";
+import type { ItemWithReusedPassword } from "@/lib/queries/item";
 
 interface WarningBannerProps {
     activeNotification: keyof Data;
-    originalPasswordOf: Item["originalPasswordOf"];
+    originalPasswordOf: ItemWithReusedPassword["originalPasswordOf"];
 }
 
 const WarningBanner = ({
@@ -32,7 +32,7 @@ const WarningBanner = ({
                                 siteName={originalPasswordOf.siteName}
                                 siteLink={originalPasswordOf.siteLink}
                             />
-                            {originalPasswordOf.favorited && (
+                            {originalPasswordOf.favoritedAt && (
                                 <div className="absolute top-full left-full p-0.5 -translate-x-1/2 -translate-y-1/2 bg-yellow-400 rounded-full">
                                     <Star
                                         className="h-3 w-3"

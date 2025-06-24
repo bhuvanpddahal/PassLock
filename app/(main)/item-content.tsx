@@ -1,22 +1,29 @@
-import moment from "moment";
 import {
     Check,
     Clock,
     Copy,
     Eye,
     EyeOff,
+    ShieldAlertIcon,
+    ShieldCheckIcon,
     Star
 } from "lucide-react";
-import {
-    passwordStrength as checkPasswordStrength
-} from "check-password-strength";
+import { $Enums, Site } from "@prisma/client";
+import { formatDistanceToNowStrict } from "date-fns";
 import { Dispatch, SetStateAction, useState } from "react";
 
 import ItemImage from "./item-image";
 import EditItemButton from "./edit-item-button";
 import DeleteItemButton from "./delete-item-button";
 import { cn } from "@/lib/utils";
+import {
+    HoverCard,
+    HoverCardContent,
+    HoverCardTrigger
+} from "@/components/ui/hover-card";
 import { Button } from "@/components/ui/button";
+import SiteSecurityDetails from "./site-security-details";
+import { convertValueToTitleCase } from "@/lib/password";
 
 interface ItemContentProps {
     id: string;
@@ -24,8 +31,10 @@ interface ItemContentProps {
     siteLink: string;
     email: string;
     password: string;
-    favorited: boolean;
+    passwordStrength: $Enums.PasswordStrength;
     addedAt: Date;
+    favoritedAt: Date | null;
+    site: Site;
 }
 
 const ItemContent = ({
@@ -34,14 +43,16 @@ const ItemContent = ({
     siteLink,
     email,
     password,
-    favorited,
-    addedAt
+    passwordStrength,
+    addedAt,
+    favoritedAt,
+    site
 }: ItemContentProps) => {
-    const passwordStrength = checkPasswordStrength(password);
     const [showPassword, setShowPassword] = useState(false);
     const [isEmailCopied, setIsEmailCopied] = useState(false);
     const [isPasswordCopied, setIsPasswordCopied] = useState(false);
     const [isSiteLinkCopied, setIsSiteLinkCopied] = useState(false);
+    const [showSiteSecurityDetails, setShowSiteSecurityDetails] = useState(false);
 
     const handleCopy = (
         isCopied: boolean,
@@ -68,7 +79,7 @@ const ItemContent = ({
                 <div className="flex items-center gap-1 text-muted-foreground">
                     <Clock className="h-4 w-4" />
                     <span className="text-xs font-medium">
-                        Added {moment(addedAt).startOf("seconds").fromNow()}
+                        Added {formatDistanceToNowStrict(addedAt)} ago
                     </span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -78,13 +89,13 @@ const ItemContent = ({
                         siteLink={siteLink}
                         email={email}
                         password={password}
-                        favorited={favorited}
+                        favorited={!!favoritedAt}
                     />
                     <DeleteItemButton
                         id={id}
                         siteName={siteName}
                         email={email}
-                        favorited={favorited}
+                        favorited={!!favoritedAt}
                     />
                 </div>
             </div>
@@ -93,12 +104,12 @@ const ItemContent = ({
                     <ItemImage
                         key={siteLink}
                         siteName={siteName}
-                        siteLink={siteLink}
+                        hostname={site.canonicalHostname}
                         width={90}
                         height={90}
                         className="shadow-lg"
                     />
-                    {favorited && (
+                    {favoritedAt && (
                         <div className="absolute top-full left-full p-1 -translate-x-1/2 -translate-y-1/2 bg-yellow-400 rounded-full">
                             <Star
                                 className="h-4 w-4"
@@ -112,22 +123,52 @@ const ItemContent = ({
                 </h2>
             </div>
             <div className="border border-zinc-200 rounded-lg">
-                <div className="group py-3 px-4 flex justify-between border-b border-zinc-200">
-                    <div>
-                        <h3 className="text-[13px] text-primary -mb-0.5">Site Link</h3>
-                        <p className="text-sm text-zinc-800 font-medium">{siteLink}</p>
+                <div className="py-3 px-4 border-b border-zinc-200">
+                    <div className="group flex justify-between">
+                        <div>
+                            <h3 className="text-[13px] text-primary -mb-0.5">Site Link</h3>
+                            <div className="flex items-center gap-x-1.5">
+                                <p
+                                    className="text-sm text-zinc-800 font-medium cursor-pointer"
+                                    onClick={() => setShowSiteSecurityDetails(!showSiteSecurityDetails)}
+                                >
+                                    {siteLink}
+                                </p>
+                                <HoverCard>
+                                    <HoverCardTrigger className="p-0.5">
+                                        {site.isSecured ? (
+                                            <ShieldCheckIcon className="size-4 stroke-background fill-green-500" />
+                                        ) : (
+                                            <ShieldAlertIcon className="size-4 stroke-background fill-red-500" />
+                                        )}
+                                    </HoverCardTrigger>
+                                    <HoverCardContent className="space-y-2">
+                                        <p>
+                                            {site.isSecured
+                                                ? "This site is secured and adheres to industry-standard security best practices."
+                                                : "This site is not secured and does not adhere to standard security best practices."
+                                            }
+                                        </p>
+                                        {!showSiteSecurityDetails && (
+                                            <p>Click the site link on the left to view additional security details.</p>
+                                        )}
+                                    </HoverCardContent>
+                                </HoverCard>
+                            </div>
+                        </div>
+                        <Button
+                            variant="outline"
+                            className="h-5 w-5 p-0 opacity-0 transition-opacity delay-1000 group-hover:opacity-100 group-hover:transition-none group-hover:delay-0"
+                            onClick={handleCopy(isSiteLinkCopied, setIsSiteLinkCopied, siteLink)}
+                        >
+                            {isSiteLinkCopied ? (
+                                <Check className="h-3 w-3 text-green-600" />
+                            ) : (
+                                <Copy className="h-3 w-3 text-zinc-600" />
+                            )}
+                        </Button>
                     </div>
-                    <Button
-                        variant="outline"
-                        className="h-5 w-5 p-0 opacity-0 transition-opacity delay-1000 group-hover:opacity-100 group-hover:transition-none group-hover:delay-0"
-                        onClick={handleCopy(isSiteLinkCopied, setIsSiteLinkCopied, siteLink)}
-                    >
-                        {isSiteLinkCopied ? (
-                            <Check className="h-3 w-3 text-green-600" />
-                        ) : (
-                            <Copy className="h-3 w-3 text-zinc-600" />
-                        )}
-                    </Button>
+                    <SiteSecurityDetails site={site} show={showSiteSecurityDetails} />
                 </div>
                 <div className="group py-3 px-4 flex justify-between border-b border-zinc-200">
                     <div>
@@ -183,18 +224,18 @@ const ItemContent = ({
                         </div>
                         <div className={cn(
                             "text-xs text-muted-foreground text-right font-medium",
-                            passwordStrength.id === 0 && "text-red-500",
-                            passwordStrength.id === 1 && "text-orange-500",
-                            passwordStrength.id === 2 && "text-blue-500",
-                            passwordStrength.id === 3 && "text-green-500"
+                            passwordStrength === "TOO_WEAK" && "text-red-500",
+                            passwordStrength === "WEAK" && "text-orange-500",
+                            passwordStrength === "MEDIUM" && "text-blue-500",
+                            passwordStrength === "STRONG" && "text-green-500"
                         )}>
-                            {passwordStrength.value}
+                            {convertValueToTitleCase(passwordStrength)}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    )
+    );
 };
 
 export default ItemContent;

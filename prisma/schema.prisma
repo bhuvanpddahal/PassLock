@@ -23,17 +23,39 @@ model User {
     accounts Account[]
 }
 
+enum PasswordStrength {
+    TOO_WEAK
+    WEAK
+    MEDIUM
+    STRONG
+}
+
 model Account {
-    id        String   @id @default(auto()) @map("_id") @db.ObjectId
-    siteName  String
-    siteLink  String
-    email     String
-    password  String
-    favorited Boolean  @default(false)
-    addedAt   DateTime @default(now())
-    userId    String   @db.ObjectId
+    id                String           @id @default(auto()) @map("_id") @db.ObjectId
+    siteName          String
+    siteLink          String
+    email             String
+    password          String
+    passwordStrength  PasswordStrength
+    addedAt           DateTime         @default(now())
+    passwordUpdatedAt DateTime         @default(now())
+    favoritedAt       DateTime?
+    userId            String           @db.ObjectId
+    siteId            String           @db.ObjectId
 
     user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    site Site @relation(fields: [siteId], references: [id], onDelete: NoAction)
+}
+
+model Site {
+    id                 String   @id @default(auto()) @map("_id") @db.ObjectId
+    canonicalHostname  String   @unique()
+    isSecured          Boolean
+    securityIssues     String[] @default([])
+    lastCheckedAt      DateTime @default(now())
+    certificateDetails Json?
+
+    accounts Account[]
 }
 
 model VerificationToken {

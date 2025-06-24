@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Account } from "@prisma/client";
 
 import AllGood from "./all-good";
 import FetchError from "../fetch-error";
@@ -9,13 +8,14 @@ import ItemContent from "../item-content";
 import Notifications from "./notifications";
 import WarningBanner from "./warning-banner";
 import ItemContentLoader from "../item-content-loader";
-import type { Item } from "@/lib/queries/item";
+import { ItemWithSite } from "../types";
 import { Skeleton } from "@/components/ui/skeleton";
+import type { ItemWithReusedPassword } from "@/lib/queries/item";
 
 export interface Data {
-    vulnerablePasswords: Account[];
-    reusedPasswords: Item[];
-    unsecuredWebsites: Account[];
+    vulnerablePasswords: ItemWithSite[];
+    reusedPasswords: ItemWithReusedPassword[];
+    unsecuredWebsites: ItemWithSite[];
 }
 
 export interface Active {
@@ -68,7 +68,7 @@ const WatchtowerContent = () => {
             <div className="flex-1">
                 {notificationStatus[active.notification].isFetching ? (
                     <>
-                        <Skeleton className="h-[100px] m-3" />
+                        <Skeleton className="h-[110px] m-3" />
                         <ItemContentLoader />
                     </>
                 ) : notificationStatus[active.notification].isError ? (
@@ -85,8 +85,10 @@ const WatchtowerContent = () => {
                             siteLink={data[active.notification][active.index].siteLink}
                             email={data[active.notification][active.index].email}
                             password={data[active.notification][active.index].password}
-                            favorited={data[active.notification][active.index].favorited}
+                            passwordStrength={data[active.notification][active.index].passwordStrength}
                             addedAt={data[active.notification][active.index].addedAt}
+                            favoritedAt={data[active.notification][active.index].favoritedAt}
+                            site={data[active.notification][active.index].site}
                         />
                     </>
                 ) : (

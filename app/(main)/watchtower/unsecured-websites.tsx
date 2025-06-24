@@ -192,7 +192,10 @@ const UnsecuredWebsites = ({
                                 })}
                             >
                                 <div className="relative">
-                                    <ItemImage siteName={item.siteName} siteLink={item.siteLink} />
+                                    <ItemImage
+                                        siteName={item.siteName}
+                                        hostname={item.site.canonicalHostname}
+                                    />
                                 </div>
                                 <div>
                                     <span className={cn(

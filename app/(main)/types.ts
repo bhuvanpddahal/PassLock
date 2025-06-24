@@ -1,21 +1,25 @@
-import { Account } from "@prisma/client";
+import { Account, Site } from "@prisma/client";
 
-import { Item } from "@/lib/queries/item";
+import { ItemWithReusedPassword } from "@/lib/queries/item";
+
+export interface ItemWithSite extends Account {
+    site: Site;
+}
 
 export interface ItemsData {
-    items: Account[];
+    items: ItemWithSite[];
     totalItems: number;
     hasNextPage: boolean;
 }
 
 export interface NotificationsData {
-    items: Account[];
+    items: ItemWithSite[];
     totalItems: number;
     hasNextPage: boolean;
 }
 
 export interface ReusedPasswordsData {
-    items: Item[];
+    items: ItemWithReusedPassword[];
     totalItems: number;
     hasNextPage: boolean;
 }

@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 interface ItemImageProps {
     siteName: string;
-    siteLink: string;
+    hostname: string;
     width?: number | `${number}`;
     height?: number | `${number}`;
     className?: string;
@@ -13,13 +13,13 @@ interface ItemImageProps {
 
 const ItemImage = ({
     siteName,
-    siteLink,
+    hostname,
     width = 40,
     height = 40,
     className = ""
 }: ItemImageProps) => {
-    const encodedSiteLink = encodeURIComponent(siteLink);
-    const faviconProxyUrl = `/api/favicon?siteLink=${encodedSiteLink}`;
+    const encodedHostname = encodeURIComponent(hostname);
+    const faviconProxyUrl = `/api/favicon?hostname=${encodedHostname}`;
     const [isError, setIsError] = useState(false);
 
     return (

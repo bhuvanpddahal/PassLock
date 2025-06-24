@@ -76,8 +76,10 @@ const SearchContent = () => {
                         siteLink={items[activeIndex].siteLink}
                         email={items[activeIndex].email}
                         password={items[activeIndex].password}
-                        favorited={items[activeIndex].favorited}
+                        passwordStrength={items[activeIndex].passwordStrength}
                         addedAt={items[activeIndex].addedAt}
+                        favoritedAt={items[activeIndex].favoritedAt}
+                        site={items[activeIndex].site}
                     />
                 ) : (
                     <NoSearchResults />

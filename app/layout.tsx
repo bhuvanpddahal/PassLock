@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
 import { CookiesProvider } from "next-client-cookies/server";
+import { DM_Mono, Plus_Jakarta_Sans } from "next/font/google";
 
 import "./globals.css";
 import Providers from "@/components/providers";
@@ -10,6 +10,12 @@ import { CSPostHogProvider } from "@/components/analytics/provider";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
     subsets: ["latin"]
+});
+
+const martianMono = DM_Mono({
+    subsets: ["latin"],
+    weight: ["300", "400", "500"],
+    variable: "--font-martian-mono"
 });
 
 export const metadata: Metadata = {
@@ -26,7 +32,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     const appUrl = process.env.NEXT_PUBLIC_APP_URL!;
-    
+
     return (
         <html lang="en">
             <head>
@@ -39,7 +45,7 @@ export default function RootLayout({
             </head>
             <CookiesProvider>
                 <CSPostHogProvider>
-                    <body className={plusJakartaSans.className}>
+                    <body className={`${plusJakartaSans.className} ${martianMono.variable} antialiased`}>
                         <Toaster />
                         <Providers>
                             <NewItemModal />

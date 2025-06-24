@@ -16,6 +16,7 @@ const Sidebar = () => {
         <aside className="w-full sm:w-[270px] h-full bg-slate-800 flex flex-col">
             <div className="p-6 border-b border-zinc-600">
                 <Logo
+                    href="/dashboard"
                     className="text-zinc-100"
                     size="small"
                 />

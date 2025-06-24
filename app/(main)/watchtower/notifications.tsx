@@ -35,7 +35,7 @@ const Notifications = ({
                     : "No notifications"
                 }
             </h3>
-            <ScrollArea className="h-[calc(100vh-124px)] space-y-3">
+            <ScrollArea className="h-[calc(100vh-160px)] space-y-3">
                 <VulnerablePasswords
                     active={active}
                     setActive={setActive}
@@ -61,6 +61,9 @@ const Notifications = ({
                     setNotificationStatus={setNotificationStatus}
                 />
             </ScrollArea>
+            <p className="text-muted-foreground text-[0.6875rem] mt-3.5 text-center">
+                Your passwords are encrypted before storing.
+            </p>
         </div>
     )
 };
