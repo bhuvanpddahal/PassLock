@@ -1,5 +1,6 @@
 # Introduction
-## This is the project built in Next 14 with TypeScript that uses technologies like Prisma DB, Cryptr, Nodemailer, Shadcn UI, Zustand, etc.
+
+## This is a project built in Next 14 with TypeScript that uses technologies like Prisma DB, Cryptr, Nodemailer, Shadcn UI, Zustand, etc.
 
 This is a small project that helps to manage your passwords the correct way. A mini password manager inspired by 1Password that has features like Password Strength Assesment (a real-time feedback on password strength), Secure Vault to safely store and manage all your passwords in one place, Friendly UI for an intuitive and easy-to-use interface to effortless password management and peace of mind.
 
@@ -33,6 +34,7 @@ Go to [https://pass-lock-five.vercel.app](https://pass-lock-five.vercel.app), cr
     #or
     bun run dev
     ```
+
 ## Contribute
 
 There are no such rules and regulations on how you should contribute, however we expect the following things in a good contribution:
