@@ -22,7 +22,7 @@ const ItemContentLoader = () => {
                     <h3 className="text-[13px] text-primary -mb-0.5">Site Link</h3>
                     <div className="flex items-center gap-x-2">
                         <Skeleton className="h-[10px] w-[150px] my-2" />
-                        <Skeleton className="size-4 rounded-full" />
+                        <Skeleton className="size-3.5 rounded-full" />
                     </div>
                 </div>
                 <div className="h-[61.5px] py-3 px-4 border-b border-zinc-200">
