@@ -1,0 +1,19 @@
+{
+	"extends": "../tsconfig.json",
+	"compilerOptions": {
+		"module": "commonjs",
+		"moduleResolution": "node",
+		"outDir": "../dist",
+		"noEmit": false,
+		"isolatedModules": false,
+		"target": "es2022",
+		"paths": {
+			"@/*": ["../*"]
+		}
+	},
+	"include": [
+		"sites-security-check.ts",
+		"../node_modules/@prisma/client/index.d.ts"
+	],
+	"exclude": ["../node_modules", "../.next", "../dist"]
+}

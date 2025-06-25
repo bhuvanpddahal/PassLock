@@ -25,8 +25,11 @@ jobs:
             - name: Generate Prisma client
               run: npx prisma generate
 
+            - name: Compile security check script
+              run: npm run build:cron
+
             - name: Run sites security check script
-              run: npx ts-node scripts/sites-security-check.ts
+              run: node dist/scripts/sites-security-check.js
               env:
                   DATABASE_URL: ${{ secrets.DATABASE_URL }}
                   APP_BASE_URL: ${{ secrets.APP_BASE_URL }}
