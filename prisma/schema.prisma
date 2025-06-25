@@ -52,8 +52,8 @@ model Site {
     canonicalHostname  String   @unique()
     isSecured          Boolean
     securityIssues     String[] @default([])
-    lastCheckedAt      DateTime @default(now())
     certificateDetails Json?
+    lastCheckedAt      DateTime @default(now())
 
     accounts Account[]
 }

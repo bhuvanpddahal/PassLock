@@ -5,7 +5,7 @@ import { Prisma } from "@prisma/client";
 
 import { SiteSecurityCheckResponse } from "@/app/api/site/security-check/route";
 
-interface SecurityInfo extends Omit<SiteSecurityCheckResponse, "certificate"> {
+export interface SecurityInfo extends Omit<SiteSecurityCheckResponse, "certificate"> {
     certificate: Prisma.InputJsonValue | null;
 }
 

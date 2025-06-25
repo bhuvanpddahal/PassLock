@@ -37,7 +37,7 @@ export async function GET(req: NextRequest): Promise<
 
     if (!requestedHostname) {
         return NextResponse.json(
-            { error: "'requestedHostname' query parameter is required" },
+            { error: "'hostname' query parameter is required" },
             { status: 400 }
         );
     }
@@ -48,7 +48,6 @@ export async function GET(req: NextRequest): Promise<
 
     try {
         await new Promise<void>((resolve) => {
-            console.log('inside promise');
             const httpsCheckOptions = {
                 hostname: requestedHostname,
                 port: 443,
@@ -58,16 +57,13 @@ export async function GET(req: NextRequest): Promise<
             };
 
             const request = https.request(httpsCheckOptions, (res) => {
-                console.log('inside request');
                 const socket = res.socket as tls.TLSSocket;
                 const cert = socket.getPeerCertificate(true); // Get the full certificate chain
 
                 if (!cert) {
-                    console.log('inside not cert');
                     siteSecurityIssues.push("No SSL/TLS certificate found on HTTPS port.");
                     isHttpsConnectionTrusted = false;
                 } else {
-                    console.log('inside else');
                     certificateDetails = {
                         subject: cert.subject,
                         issuer: cert.issuer,
@@ -76,7 +72,6 @@ export async function GET(req: NextRequest): Promise<
                         fingerprint: cert.fingerprint,
                         serialNumber: cert.serialNumber
                     };
-                    console.log({ certificateDetails });
 
                     const now = new Date();
                     const validFrom = new Date(cert.valid_from);
